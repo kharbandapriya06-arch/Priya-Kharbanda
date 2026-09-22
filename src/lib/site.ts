@@ -1,0 +1,72 @@
+export const site = {
+  name: "Priya Kharbanda",
+  shortName: "Priya",
+  role: "Designer",
+  location: "Meerut, Uttar Pradesh",
+  email: "kharbandapriya06@gmail.com",
+  phone: "+91 74558 44665",
+  phoneHref: "tel:+917455844665",
+  availability: "Associate Designer at Bough Consulting",
+  description:
+    "UI/UX designer crafting intuitive interfaces, workflows, and visual systems that enhance usability and drive business value.",
+  intro:
+    "I turn complex requirements into clear interfaces, journeys, and design systems — working with product, business, and engineering to ship work people can actually use.",
+  about:
+    "Creative and versatile designer with experience in UI/UX, visual communication, presentation design, and digital content. I craft intuitive interfaces, marketing materials, and business presentations that align with brand and business goals, with a focus on user-centered design in collaborative teams.",
+  cvHref: "/priya-kharbanda-cv.pdf",
+  socials: [
+    { label: "LinkedIn", href: "https://www.linkedin.com" },
+    { label: "Email", href: "mailto:kharbandapriya06@gmail.com" },
+  ],
+  capabilities: [
+    "UI/UX design",
+    "Wireframing & prototyping",
+    "Design systems",
+    "User research",
+    "Responsive web & mobile",
+    "Visual & typographic design",
+  ],
+  tools: [
+    "Figma",
+    "FigJam",
+    "Framer",
+    "Adobe XD",
+    "Photoshop",
+    "Sketch",
+    "Wix",
+    "Slack",
+    "Trello",
+  ],
+  concepts: [
+    "UX research",
+    "User interviews",
+    "Personas & journey mapping",
+    "Usability testing",
+    "Information architecture",
+    "User flows",
+    "Wireframing",
+    "Prototyping",
+    "Design systems",
+    "Responsive web & mobile",
+    "Accessibility",
+  ],
+  languages: [
+    { name: "English", level: "Fluent" },
+    { name: "Hindi", level: "Native" },
+  ],
+  certifications: [
+    "Google UX Design",
+    "Google AI Essentials",
+    "NPTEL — Privacy & Security in Social Media",
+    "Design Thinking: Introduction to Management & Leadership",
+  ],
+  awards: [
+    "2nd Place — Mahotsav Android/IoT App Competition (National)",
+    "Runner-up — All India National Online Art Competition",
+  ],
+  nav: [
+    { href: "#work", label: "Work" },
+    { href: "#about", label: "About" },
+    { href: "#contact", label: "Contact" },
+  ],
+} as const;

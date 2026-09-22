@@ -1,36 +1,42 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Designer portfolio
 
-## Getting Started
+A Next.js portfolio for a product and brand designer. Sample work, an about page, and a contact form are in place so you can replace copy and images with your own.
 
-First, run the development server:
+## Local setup
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Personalize
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Edit `src/lib/site.ts` — name, role, email, social links, and bio.
+2. Edit `src/lib/projects.ts` — case studies. Swap the geometric covers for photos later by changing `ProjectCover`.
+3. Update the heading copy on `src/app/page.tsx` and `src/app/about/page.tsx`.
 
-## Learn More
+## Web3Forms (contact form)
 
-To learn more about Next.js, take a look at the following resources:
+The contact page posts to [Web3Forms](https://web3forms.com) from the browser. No server route is required on the free plan.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. Create an access key at [web3forms.com](https://web3forms.com) and verify your email.
+2. Copy `.env.example` to `.env.local` if it is not already there.
+3. Set `NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY` to your key.
+4. Restart `npm run dev`.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Until the key is set, the form explains what is missing instead of failing silently.
 
 ## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+This app is ready for Vercel with no extra config.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. Push the repo to GitHub.
+2. Import the project at [vercel.com/new](https://vercel.com/new).
+3. Add environment variables:
+   - `NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY`
+   - `NEXT_PUBLIC_SITE_URL` (your production URL, e.g. `https://your-domain.vercel.app`)
+4. Deploy.
+
+After the first deploy, set `NEXT_PUBLIC_SITE_URL` to the live domain and redeploy so sitemap and Open Graph URLs are correct.
