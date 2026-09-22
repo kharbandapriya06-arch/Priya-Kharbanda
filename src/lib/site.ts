@@ -2,6 +2,11 @@ export const site = {
   name: "Priya Kharbanda",
   shortName: "Priya",
   role: "Designer",
+  roles: [
+    "Branding Designer",
+    "Graphic Designer",
+    "UI/UX Designer",
+  ],
   location: "Meerut, Uttar Pradesh",
   email: "kharbandapriya06@gmail.com",
   phone: "+91 74558 44665",

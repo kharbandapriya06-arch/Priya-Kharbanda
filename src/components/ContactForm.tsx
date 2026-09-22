@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useState, type ReactNode } from "react";
+import { FormEvent, useState } from "react";
 import { site } from "@/lib/site";
 
 type Status = "idle" | "submitting" | "success" | "error" | "missing-key";
@@ -30,8 +30,7 @@ export function ContactForm() {
       from_name: site.name,
       name: formData.get("name"),
       email: formData.get("email"),
-      project_type: formData.get("project_type"),
-      budget: formData.get("budget"),
+      website: formData.get("website"),
       message: formData.get("message"),
       botcheck: formData.get("botcheck") ? "true" : "",
     };
@@ -45,7 +44,10 @@ export function ContactForm() {
         },
         body: JSON.stringify(payload),
       });
-      const result = (await response.json()) as { success?: boolean; message?: string };
+      const result = (await response.json()) as {
+        success?: boolean;
+        message?: string;
+      };
 
       if (result.success) {
         form.reset();
@@ -61,142 +63,178 @@ export function ContactForm() {
     }
   }
 
-  if (status === "success") {
-    return (
-      <div className="border border-line bg-surface px-6 py-10 md:px-8">
-        <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-accent">
-          Sent
-        </p>
-        <h3 className="mt-3 font-serif text-3xl leading-none">Thank you.</h3>
-        <p className="mt-4 max-w-md text-sm leading-6 text-muted">
-          I read every note and usually reply within a few days. If it is
-          urgent, email {site.email}.
-        </p>
-        <button
-          type="button"
-          onClick={() => setStatus("idle")}
-          className="mt-8 text-sm underline decoration-line underline-offset-4 hover:decoration-ink"
-        >
-          Send another message
-        </button>
-      </div>
-    );
-  }
-
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-      <input
-        type="checkbox"
-        name="botcheck"
-        tabIndex={-1}
-        autoComplete="off"
-        className="hidden"
-        aria-hidden="true"
-      />
+    <section id="contact" className="contact">
+      <div className="contact-grid">
+        <aside className="contact-card contact-card--info">
+          <h2 className="contact-title">Get in Touch</h2>
+          <p className="contact-lead">
+            I’m here to discuss your project and bring your ideas to life with
+            thoughtful design.
+          </p>
+          <ul className="contact-details">
+            <li>
+              <span className="contact-icon" aria-hidden>
+                <svg viewBox="0 0 24 24">
+                  <rect
+                    x="3.5"
+                    y="5.5"
+                    width="17"
+                    height="13"
+                    rx="2"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.6"
+                  />
+                  <path
+                    d="M4 7.2 12 13l8-5.8"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.6"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </span>
+              <a href={`mailto:${site.email}`}>{site.email}</a>
+            </li>
+            <li>
+              <span className="contact-icon" aria-hidden>
+                <svg viewBox="0 0 24 24">
+                  <path
+                    d="M12 21s7-6.2 7-11.2A7 7 0 1 0 5 9.8C5 14.8 12 21 12 21Z"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.6"
+                  />
+                  <circle
+                    cx="12"
+                    cy="9.8"
+                    r="2.2"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.6"
+                  />
+                </svg>
+              </span>
+              <span>{site.location}</span>
+            </li>
+            <li>
+              <span className="contact-icon" aria-hidden>
+                <svg viewBox="0 0 24 24">
+                  <path
+                    d="M7.2 3.8h3.1l1.2 3.1-2 1.2a12.4 12.4 0 0 0 6.4 6.4l1.2-2 3.1 1.2v3.1c0 .7-.6 1.3-1.3 1.3C10.6 18.1 5.9 13.4 5.9 5.1c0-.7.6-1.3 1.3-1.3Z"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.6"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </span>
+              <a href={site.phoneHref}>{site.phone}</a>
+            </li>
+          </ul>
+        </aside>
 
-      <Field label="Name" htmlFor="name">
-        <input
-          id="name"
-          name="name"
-          type="text"
-          required
-          autoComplete="name"
-          className="field"
-          placeholder="Your name"
-        />
-      </Field>
+        <div className="contact-card contact-card--form">
+          {status === "success" ? (
+            <div className="contact-success">
+              <h3>Thank you.</h3>
+              <p>
+                I read every note and usually reply within a few days. If it is
+                urgent, email {site.email}.
+              </p>
+              <button
+                type="button"
+                className="contact-submit"
+                onClick={() => setStatus("idle")}
+              >
+                Send another message
+              </button>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit} className="contact-form">
+              <input
+                type="checkbox"
+                name="botcheck"
+                tabIndex={-1}
+                autoComplete="off"
+                className="hidden"
+                aria-hidden="true"
+              />
 
-      <Field label="Email" htmlFor="email">
-        <input
-          id="email"
-          name="email"
-          type="email"
-          required
-          autoComplete="email"
-          className="field"
-          placeholder="you@studio.com"
-        />
-      </Field>
+              <label className="sr-only" htmlFor="name">
+                Your name
+              </label>
+              <input
+                id="name"
+                name="name"
+                type="text"
+                required
+                autoComplete="name"
+                className="contact-input"
+                placeholder="Your Name*"
+              />
 
-      <div className="grid gap-6 sm:grid-cols-2">
-        <Field label="Project type" htmlFor="project_type">
-          <select id="project_type" name="project_type" required className="field">
-            <option value="">Select one</option>
-            <option>Brand identity</option>
-            <option>Product design</option>
-            <option>Website</option>
-            <option>Art direction</option>
-            <option>Something else</option>
-          </select>
-        </Field>
-        <Field label="Budget" htmlFor="budget">
-          <select id="budget" name="budget" className="field">
-            <option value="">Optional</option>
-            <option>Under $8k</option>
-            <option>$8k – $20k</option>
-            <option>$20k – $50k</option>
-            <option>$50k+</option>
-            <option>Not sure yet</option>
-          </select>
-        </Field>
+              <label className="sr-only" htmlFor="email">
+                Email address
+              </label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                required
+                autoComplete="email"
+                className="contact-input"
+                placeholder="Email Address*"
+              />
+
+              <label className="sr-only" htmlFor="website">
+                Your website
+              </label>
+              <input
+                id="website"
+                name="website"
+                type="text"
+                autoComplete="url"
+                className="contact-input"
+                placeholder="Your Website (Optional)"
+              />
+
+              <label className="sr-only" htmlFor="message">
+                Message
+              </label>
+              <textarea
+                id="message"
+                name="message"
+                required
+                rows={4}
+                className="contact-input contact-input--area"
+                placeholder="Write your message..."
+              />
+
+              {status === "missing-key" && (
+                <p className="contact-note">
+                  Add your Web3Forms access key to{" "}
+                  <code>NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY</code>, then restart
+                  the server. Until then, email {site.email}.
+                </p>
+              )}
+
+              {status === "error" && (
+                <p className="contact-note">{errorMessage}</p>
+              )}
+
+              <button
+                type="submit"
+                disabled={status === "submitting"}
+                className="contact-submit"
+              >
+                {status === "submitting" ? "Sending…" : "Send Message"}
+              </button>
+            </form>
+          )}
+        </div>
       </div>
-
-      <Field label="Message" htmlFor="message">
-        <textarea
-          id="message"
-          name="message"
-          required
-          rows={6}
-          className="field resize-y"
-          placeholder="What are you making, and when would you like to start?"
-        />
-      </Field>
-
-      {status === "missing-key" && (
-        <p className="text-sm leading-6 text-accent">
-          Add your Web3Forms access key to{" "}
-          <code className="font-mono text-xs">NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY</code>{" "}
-          in <code className="font-mono text-xs">.env.local</code>, then restart
-          the dev server. Until then, email {site.email}.
-        </p>
-      )}
-
-      {status === "error" && (
-        <p className="text-sm leading-6 text-accent">{errorMessage}</p>
-      )}
-
-      <div className="flex flex-wrap items-center justify-between gap-4 pt-2">
-        <button
-          type="submit"
-          disabled={status === "submitting"}
-          className="bg-ink px-6 py-3 text-sm text-paper transition-colors hover:bg-accent disabled:opacity-60"
-        >
-          {status === "submitting" ? "Sending…" : "Send message"}
-        </button>
-        <p className="text-xs leading-5 text-muted">
-          Submissions go to email through Web3Forms. No account required on this
-          site.
-        </p>
-      </div>
-    </form>
-  );
-}
-
-function Field({
-  label,
-  htmlFor,
-  children,
-}: {
-  label: string;
-  htmlFor: string;
-  children: ReactNode;
-}) {
-  return (
-    <label htmlFor={htmlFor} className="flex flex-col gap-2">
-      <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted">
-        {label}
-      </span>
-      {children}
-    </label>
+    </section>
   );
 }

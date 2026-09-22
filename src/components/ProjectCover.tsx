@@ -1,7 +1,15 @@
 import type { Motif, Project } from "@/lib/projects";
 import { cn } from "@/lib/utils";
 
-function MotifLayer({ motif, accent }: { motif: Motif; accent: string }) {
+function MotifLayer({
+  motif,
+  accent,
+  compact = false,
+}: {
+  motif: Motif;
+  accent: string;
+  compact?: boolean;
+}) {
   if (motif === "rings") {
     return (
       <>
@@ -27,7 +35,7 @@ function MotifLayer({ motif, accent }: { motif: Motif; accent: string }) {
         className="absolute inset-8 opacity-40"
         style={{
           backgroundImage: `linear-gradient(${accent} 1px, transparent 1px), linear-gradient(90deg, ${accent} 1px, transparent 1px)`,
-          backgroundSize: "48px 48px",
+          backgroundSize: compact ? "32px 32px" : "48px 48px",
         }}
       />
     );
@@ -93,19 +101,37 @@ function MotifLayer({ motif, accent }: { motif: Motif; accent: string }) {
 export function ProjectCover({
   project,
   className,
+  variant = "primary",
 }: {
   project: Project;
   className?: string;
+  variant?: "primary" | "secondary";
 }) {
+  const secondary = variant === "secondary";
+
   return (
     <div
-      className={cn("relative isolate overflow-hidden", className)}
+      className={cn("project-shot", secondary && "project-shot--side", className)}
       style={{
-        background: `linear-gradient(145deg, ${project.cover.from} 0%, ${project.cover.to} 120%)`,
+        background: secondary
+          ? `linear-gradient(210deg, ${project.cover.to} 0%, ${project.cover.from} 78%)`
+          : `linear-gradient(145deg, ${project.cover.from} 0%, ${project.cover.to} 120%)`,
       }}
     >
-      <MotifLayer motif={project.cover.motif} accent="rgba(255,255,255,0.55)" />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/25 to-transparent" />
+      <div className={cn("project-shot-motif", secondary && "project-shot-motif--crop")}>
+        <MotifLayer
+          motif={project.cover.motif}
+          accent="rgba(255,255,255,0.55)"
+          compact={secondary}
+        />
+      </div>
+      <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-black/10 to-transparent" />
+      {secondary ? (
+        <div className="project-shot-meta">
+          <p className="project-shot-year">{project.year}</p>
+          <p className="project-shot-name">{project.title}</p>
+        </div>
+      ) : null}
     </div>
   );
 }
