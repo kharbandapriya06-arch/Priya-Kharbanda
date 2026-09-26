@@ -1,39 +1,74 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import { site } from "@/lib/site";
 
+const roles = [
+  "Graphic Designer",
+  "UI UX Designer",
+  "UX Researcher",
+] as const;
+
+const TYPE_MS = 55;
+const ERASE_MS = 35;
+const HOLD_MS = 1800;
+
 export function Footer() {
+  const year = new Date().getFullYear();
+  const [roleIndex, setRoleIndex] = useState(0);
+  const [text, setText] = useState(roles[0]);
+  const [phase, setPhase] = useState<"typing" | "holding" | "erasing">("holding");
+
+  useEffect(() => {
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduced) {
+      setText(roles[0]);
+      return;
+    }
+
+    const full = roles[roleIndex];
+
+    if (phase === "holding") {
+      const id = window.setTimeout(() => setPhase("erasing"), HOLD_MS);
+      return () => window.clearTimeout(id);
+    }
+
+    if (phase === "erasing") {
+      if (text.length === 0) {
+        setRoleIndex((current) => (current + 1) % roles.length);
+        setPhase("typing");
+        return;
+      }
+      const id = window.setTimeout(() => {
+        setText((current) => current.slice(0, -1));
+      }, ERASE_MS);
+      return () => window.clearTimeout(id);
+    }
+
+    if (phase === "typing") {
+      if (text === full) {
+        setPhase("holding");
+        return;
+      }
+      const id = window.setTimeout(() => {
+        setText(full.slice(0, text.length + 1));
+      }, TYPE_MS);
+      return () => window.clearTimeout(id);
+    }
+  }, [phase, text, roleIndex]);
+
   return (
-    <footer className="mt-auto border-t border-line">
-      <div className="mx-auto flex max-w-6xl flex-col gap-8 px-5 py-10 md:flex-row md:items-end md:justify-between md:px-8">
-        <div>
-          <p className="font-serif text-3xl leading-none">{site.name}</p>
-          <p className="mt-3 max-w-sm text-sm leading-6 text-muted">
-            {site.role}. {site.availability}.
-          </p>
-        </div>
-        <div className="flex flex-wrap gap-x-8 gap-y-3 text-sm">
-          {site.socials.map((social) => (
-            <a
-              key={social.label}
-              href={social.href}
-              target="_blank"
-              rel="noreferrer"
-              className="text-muted transition-colors hover:text-ink"
-            >
-              {social.label}
-            </a>
-          ))}
-          {site.nav.map((item) => (
-            <a
-              key={item.href}
-              href={item.href}
-              className="text-muted transition-colors hover:text-ink"
-            >
-              {item.label}
-            </a>
-          ))}
-        </div>
-        <p className="text-xs uppercase tracking-[0.18em] text-muted">
-          © {new Date().getFullYear()}
+    <footer className="site-footer">
+      <div className="site-footer-inner">
+        <p className="site-footer-left">
+          {site.name},{" "}
+          <span className="site-footer-role">
+            {text}
+            <span className="site-footer-caret" aria-hidden />
+          </span>
+        </p>
+        <p className="site-footer-right">
+          Designed & built from scratch · {year}
         </p>
       </div>
     </footer>

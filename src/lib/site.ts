@@ -1,17 +1,27 @@
 export const site = {
   name: "Priya Kharbanda",
   shortName: "Priya",
+  /** Drop the file in `/public` and set this path (e.g. `/avatar.png`). */
+  avatar: "/avatar_3d.png",
+  heroAvatar: "/avatar_3d_new.png",
   role: "Designer",
   roles: [
     "Branding Designer",
     "Graphic Designer",
     "UI/UX Designer",
   ],
+  heroTitles: [
+    { top: "Challenge", bottom: "designer." },
+    { top: "Purpose", bottom: "thinker." },
+    { top: "Design", bottom: "creator." },
+    { top: "Insight", bottom: "strategist." },
+  ],
   location: "Meerut, Uttar Pradesh",
   email: "kharbandapriya06@gmail.com",
   phone: "+91 74558 44665",
   phoneHref: "tel:+917455844665",
   availability: "Associate Designer at Bough Consulting",
+  previouslyAt: ["EazyByts", "Chandigarh University", "Freelance"],
   description:
     "UI/UX designer crafting intuitive interfaces, workflows, and visual systems that enhance usability and drive business value.",
   intro:
@@ -73,5 +83,18 @@ export const site = {
     { href: "#work", label: "Work" },
     { href: "#about", label: "About" },
     { href: "#contact", label: "Contact" },
+  ],
+  marquee: [
+    "UI/UX Design",
+    "UX Strategy & Research",
+    "Brand Identity",
+    "Typography",
+    "Social Media",
+    "Wireframing",
+    "Prototyping",
+    "Design Systems",
+    "Visual Design",
+    "Presentations",
+    "Illustrations",
   ],
 } as const;

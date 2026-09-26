@@ -65,77 +65,48 @@ export function ContactForm() {
 
   return (
     <section id="contact" className="contact">
-      <div className="contact-grid">
-        <aside className="contact-card contact-card--info">
-          <h2 className="contact-title">Get in Touch</h2>
+      <div className="contact-panel">
+        <div className="contact-panel-copy">
+          <p className="contact-kicker">{site.availability}</p>
+
+          <h2 className="contact-title">
+            Get in <span className="contact-title-accent">Touch.</span>
+          </h2>
+
           <p className="contact-lead">
             I’m here to discuss your project and bring your ideas to life with
             thoughtful design.
           </p>
+
+          <div className="contact-actions">
+            <a className="contact-btn contact-btn--solid" href={`mailto:${site.email}`}>
+              Email me
+            </a>
+            <a
+              className="contact-btn"
+              href={site.socials[0]?.href}
+              target="_blank"
+              rel="noreferrer"
+            >
+              LinkedIn
+            </a>
+            <a className="contact-btn" href={site.cvHref} target="_blank" rel="noreferrer">
+              Resume
+            </a>
+          </div>
+
           <ul className="contact-details">
             <li>
-              <span className="contact-icon" aria-hidden>
-                <svg viewBox="0 0 24 24">
-                  <rect
-                    x="3.5"
-                    y="5.5"
-                    width="17"
-                    height="13"
-                    rx="2"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.6"
-                  />
-                  <path
-                    d="M4 7.2 12 13l8-5.8"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.6"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </span>
               <a href={`mailto:${site.email}`}>{site.email}</a>
             </li>
+            <li>{site.location}</li>
             <li>
-              <span className="contact-icon" aria-hidden>
-                <svg viewBox="0 0 24 24">
-                  <path
-                    d="M12 21s7-6.2 7-11.2A7 7 0 1 0 5 9.8C5 14.8 12 21 12 21Z"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.6"
-                  />
-                  <circle
-                    cx="12"
-                    cy="9.8"
-                    r="2.2"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.6"
-                  />
-                </svg>
-              </span>
-              <span>{site.location}</span>
-            </li>
-            <li>
-              <span className="contact-icon" aria-hidden>
-                <svg viewBox="0 0 24 24">
-                  <path
-                    d="M7.2 3.8h3.1l1.2 3.1-2 1.2a12.4 12.4 0 0 0 6.4 6.4l1.2-2 3.1 1.2v3.1c0 .7-.6 1.3-1.3 1.3C10.6 18.1 5.9 13.4 5.9 5.1c0-.7.6-1.3 1.3-1.3Z"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.6"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </span>
               <a href={site.phoneHref}>{site.phone}</a>
             </li>
           </ul>
-        </aside>
+        </div>
 
-        <div className="contact-card contact-card--form">
+        <div className="contact-form-wrap">
           {status === "success" ? (
             <div className="contact-success">
               <h3>Thank you.</h3>
@@ -145,7 +116,7 @@ export function ContactForm() {
               </p>
               <button
                 type="button"
-                className="contact-submit"
+                className="contact-btn contact-btn--solid"
                 onClick={() => setStatus("idle")}
               >
                 Send another message
@@ -227,7 +198,7 @@ export function ContactForm() {
               <button
                 type="submit"
                 disabled={status === "submitting"}
-                className="contact-submit"
+                className="contact-btn contact-btn--solid contact-submit"
               >
                 {status === "submitting" ? "Sending…" : "Send Message"}
               </button>

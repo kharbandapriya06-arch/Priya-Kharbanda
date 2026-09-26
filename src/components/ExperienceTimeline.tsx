@@ -115,7 +115,9 @@ export function ExperienceTimeline() {
 
   return (
     <section className="timeline">
-      <h2 className="timeline-heading">Freelance & Internships</h2>
+      <h2 className="timeline-heading">
+        <span className="text-gradient">Freelance</span> & Internships
+      </h2>
 
       <div className="timeline-track" ref={trackRef}>
         <span className="timeline-rail" aria-hidden />

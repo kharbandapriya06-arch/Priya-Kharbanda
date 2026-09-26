@@ -59,7 +59,7 @@ function MotifLayer({
   if (motif === "type") {
     return (
       <p
-        className="absolute -bottom-8 -right-4 font-serif text-[10rem] leading-none text-white/15 select-none"
+        className="absolute -bottom-8 -right-4 text-[10rem] font-black leading-none tracking-[-0.06em] text-white/15 select-none"
         aria-hidden
       >
         24
