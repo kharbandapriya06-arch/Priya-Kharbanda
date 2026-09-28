@@ -1,4 +1,4 @@
-import { Bebas_Neue, Geist_Mono, Plus_Jakarta_Sans, Syne } from "next/font/google";
+import { Bebas_Neue, Geist_Mono, Great_Vibes, Plus_Jakarta_Sans, Syne } from "next/font/google";
 import type { Metadata } from "next";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
@@ -24,6 +24,12 @@ const geistMono = Geist_Mono({
 
 const bebas = Bebas_Neue({
   variable: "--font-bebas",
+  subsets: ["latin"],
+  weight: "400",
+});
+
+const greatVibes = Great_Vibes({
+  variable: "--font-script",
   subsets: ["latin"],
   weight: "400",
 });
@@ -55,7 +61,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${plusJakarta.variable} ${syne.variable} ${geistMono.variable} ${bebas.variable} h-full antialiased`}
+      className={`${plusJakarta.variable} ${syne.variable} ${geistMono.variable} ${bebas.variable} ${greatVibes.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-paper text-ink">
         <Header />

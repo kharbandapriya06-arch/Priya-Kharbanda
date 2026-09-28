@@ -51,11 +51,17 @@ export const education = [
     org: "AND Academy",
     dates: "May 2025 – Dec 2025",
     location: "New Delhi",
+    summary:
+      "Intensive studio training across research, interaction design, and high-fidelity prototyping — building end-to-end product flows with critique and real briefs.",
+    focus: ["UX research", "Interaction design", "Design systems", "Prototyping"],
   },
   {
     title: "Bachelor of Computer Applications (BCA)",
     org: "Chandigarh University",
     dates: "Sept 2022 – June 2025",
     location: "Chandigarh",
+    summary:
+      "Computer science foundation paired with product thinking — learning how software is structured so design decisions stay sharp with engineering teams.",
+    focus: ["Software fundamentals", "Web technologies", "Problem solving", "Collaboration"],
   },
-];
+] as const;
