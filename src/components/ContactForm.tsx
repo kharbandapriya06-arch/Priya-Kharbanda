@@ -1,15 +1,41 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { site } from "@/lib/site";
+import { cn } from "@/lib/utils";
 
 type Status = "idle" | "submitting" | "success" | "error" | "missing-key";
 
 const ACCESS_KEY = process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY ?? "";
 
+const contactLines = ["trustworthy", "intuitive", "that clicks."];
+
 export function ContactForm() {
   const [status, setStatus] = useState<Status>("idle");
   const [errorMessage, setErrorMessage] = useState("");
+  const [lineIndex, setLineIndex] = useState(0);
+  const [prevLine, setPrevLine] = useState<number | null>(null);
+
+  useEffect(() => {
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduced) return;
+
+    const id = window.setInterval(() => {
+      setLineIndex((current) => {
+        const next = (current + 1) % contactLines.length;
+        window.setTimeout(() => setPrevLine(current), 0);
+        return next;
+      });
+    }, 3200);
+
+    return () => window.clearInterval(id);
+  }, []);
+
+  useEffect(() => {
+    if (prevLine === null) return;
+    const clear = window.setTimeout(() => setPrevLine(null), 700);
+    return () => window.clearTimeout(clear);
+  }, [prevLine, lineIndex]);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -69,14 +95,26 @@ export function ContactForm() {
         <div className="contact-panel-copy">
           <p className="contact-kicker">{site.availability}</p>
 
-          <h2 className="contact-title">
-            Get in <span className="contact-title-accent">Touch.</span>
+          <h2 className="contact-title" aria-live="polite">
+            <span className="contact-title-line">let&apos;s make</span>
+            <span className="contact-title-line">something</span>
+            <span className="contact-title-slot">
+              {contactLines.map((line, i) => (
+                <span
+                  key={line}
+                  className={cn(
+                    "contact-title-word",
+                    "contact-title-accent",
+                    i === lineIndex && "is-active",
+                    i === prevLine && "is-exit",
+                  )}
+                  aria-hidden={i !== lineIndex}
+                >
+                  {line}
+                </span>
+              ))}
+            </span>
           </h2>
-
-          <p className="contact-lead">
-            I’m here to discuss your project and bring your ideas to life with
-            thoughtful design.
-          </p>
 
           <div className="contact-actions">
             <a className="contact-btn contact-btn--solid" href={`mailto:${site.email}`}>
@@ -95,15 +133,6 @@ export function ContactForm() {
             </a>
           </div>
 
-          <ul className="contact-details">
-            <li>
-              <a href={`mailto:${site.email}`}>{site.email}</a>
-            </li>
-            <li>{site.location}</li>
-            <li>
-              <a href={site.phoneHref}>{site.phone}</a>
-            </li>
-          </ul>
         </div>
 
         <div className="contact-form-wrap">
@@ -133,31 +162,33 @@ export function ContactForm() {
                 aria-hidden="true"
               />
 
-              <label className="sr-only" htmlFor="name">
-                Your name
-              </label>
-              <input
-                id="name"
-                name="name"
-                type="text"
-                required
-                autoComplete="name"
-                className="contact-input"
-                placeholder="Your Name*"
-              />
+              <div className="contact-fields">
+                <label className="sr-only" htmlFor="name">
+                  Your name
+                </label>
+                <input
+                  id="name"
+                  name="name"
+                  type="text"
+                  required
+                  autoComplete="name"
+                  className="contact-input"
+                  placeholder="Your name*"
+                />
 
-              <label className="sr-only" htmlFor="email">
-                Email address
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                required
-                autoComplete="email"
-                className="contact-input"
-                placeholder="Email Address*"
-              />
+                <label className="sr-only" htmlFor="email">
+                  Email address
+                </label>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  required
+                  autoComplete="email"
+                  className="contact-input"
+                  placeholder="Email address*"
+                />
+              </div>
 
               <label className="sr-only" htmlFor="website">
                 Your website
@@ -168,7 +199,7 @@ export function ContactForm() {
                 type="text"
                 autoComplete="url"
                 className="contact-input"
-                placeholder="Your Website (Optional)"
+                placeholder="Your website (optional)"
               />
 
               <label className="sr-only" htmlFor="message">
@@ -180,7 +211,7 @@ export function ContactForm() {
                 required
                 rows={4}
                 className="contact-input contact-input--area"
-                placeholder="Write your message..."
+                placeholder="Write your message…"
               />
 
               {status === "missing-key" && (
@@ -198,9 +229,19 @@ export function ContactForm() {
               <button
                 type="submit"
                 disabled={status === "submitting"}
-                className="contact-btn contact-btn--solid contact-submit"
+                className="contact-submit"
               >
-                {status === "submitting" ? "Sending…" : "Send Message"}
+                <span>{status === "submitting" ? "Sending…" : "Send message"}</span>
+                <svg viewBox="0 0 16 16" aria-hidden>
+                  <path
+                    d="M3 8h10M9 4l4 4-4 4"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.6"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
               </button>
             </form>
           )}
