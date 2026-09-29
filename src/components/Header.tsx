@@ -5,14 +5,14 @@ import { site } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
 const navItems = [
-  { href: "#work", label: "Work" },
   { href: "#about", label: "About" },
-  { href: site.cvHref, label: "Resume", external: true },
+  { href: "#experience", label: "Experience" },
+  { href: "#contact", label: "Contact" },
 ] as const;
 
 export function Header() {
   const [collapsed, setCollapsed] = useState(false);
-  const [active, setActive] = useState("#work");
+  const [active, setActive] = useState("");
   const lastY = useRef(0);
 
   useEffect(() => {
@@ -39,7 +39,7 @@ export function Header() {
   }, []);
 
   useEffect(() => {
-    const ids = ["work", "about", "contact"];
+    const ids = ["about", "experience", "contact"];
     const observer = new IntersectionObserver(
       (entries) => {
         const visible = entries
@@ -89,23 +89,16 @@ export function Header() {
           aria-label="Primary"
           aria-hidden={collapsed}
         >
-          {navItems.map((item) => {
-            const isExternal = "external" in item && item.external;
-            const isActive = !isExternal && active === item.href;
-            return (
-              <a
-                key={item.label}
-                href={item.href}
-                {...(isExternal
-                  ? { target: "_blank", rel: "noopener noreferrer" }
-                  : {})}
-                tabIndex={collapsed ? -1 : undefined}
-                className={cn("site-nav-link", isActive && "is-active")}
-              >
-                {item.label}
-              </a>
-            );
-          })}
+          {navItems.map((item) => (
+            <a
+              key={item.label}
+              href={item.href}
+              tabIndex={collapsed ? -1 : undefined}
+              className={cn("site-nav-link", active === item.href && "is-active")}
+            >
+              {item.label}
+            </a>
+          ))}
         </nav>
 
         <span className="site-nav-dot" aria-hidden />

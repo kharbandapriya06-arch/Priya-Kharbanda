@@ -31,6 +31,16 @@ export function Hero() {
 
   return (
     <section className="hero" id="top">
+      <a className="hero-scroll" href="#work">
+        <span className="hero-scroll-mouse" aria-hidden>
+          <span className="hero-scroll-wheel" />
+        </span>
+        <span className="hero-scroll-track" aria-hidden>
+          <span className="hero-scroll-dot" />
+        </span>
+        <span className="hero-scroll-label">Scroll</span>
+      </a>
+
       <div className="hero-copy">
         <h1 className="hero-title" aria-live="polite">
           <span className="hero-title-slot hero-title-slot--top">
@@ -76,12 +86,63 @@ export function Hero() {
           and I care a lot about the <strong>why</strong> behind every decision.
         </p>
 
-        <p className="hero-prev">
-          <span className="hero-prev-label">Previously at</span>{" "}
-          <span className="hero-prev-orgs">
-            {site.previouslyAt.join(" · ")}
-          </span>
-        </p>
+        <div className="hero-actions">
+          <a className="hero-btn hero-btn--solid" href="#work">
+            <span className="hero-btn-label">Explore my work</span>
+            <span className="hero-btn-arrow" aria-hidden>
+              <svg viewBox="0 0 16 16">
+                <path
+                  d="M3 8h10M9 4l4 4-4 4"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.6"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </span>
+          </a>
+          <a
+            className="hero-btn"
+            href={site.cvHref}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <span className="hero-btn-label">View resume</span>
+            <span className="hero-btn-arrow" aria-hidden>
+              <svg viewBox="0 0 16 16">
+                <path
+                  d="M3 8h10M9 4l4 4-4 4"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.6"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </span>
+          </a>
+        </div>
+
+        <div className="hero-socials">
+          {site.socials.map((social) => {
+            const external = social.href.startsWith("http");
+            return (
+              <a
+                key={social.label}
+                className="hero-social"
+                href={social.href}
+                aria-label={social.label}
+                {...(external
+                  ? { target: "_blank", rel: "noopener noreferrer" }
+                  : {})}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element -- local public icon */}
+                <img src={social.image} alt="" />
+              </a>
+            );
+          })}
+        </div>
       </div>
 
       <div className="hero-visual">
@@ -97,11 +158,13 @@ export function Hero() {
           {/* eslint-disable-next-line @next/next/no-img-element -- local public portrait */}
           <img
             src={site.heroAvatar}
-            alt={site.name}
+            alt=""
             className="hero-portrait"
           />
+          <p className="hero-portrait-name">{site.name}</p>
         </div>
       </div>
     </section>
   );
 }
+

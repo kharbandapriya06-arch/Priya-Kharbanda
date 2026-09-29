@@ -44,7 +44,7 @@ export function ExperienceTimeline() {
         orbY = target;
         initialized = true;
       } else {
-        orbY += (target - orbY) * 0.16;
+        orbY += (target - orbY) * 0.1;
       }
 
       progress.style.height = `${Math.max(0, orbY)}px`;
@@ -71,24 +71,14 @@ export function ExperienceTimeline() {
       }
 
       items.forEach((node, i) => {
-        const current = Math.floor(progressIndex);
-        const frac = progressIndex - current;
-        let opacity = 0.14;
-        if (reduced) {
-          opacity = 1;
-        } else if (i === current) {
-          opacity = 1 - frac * 0.18;
-        } else if (i === current + 1) {
-          opacity = 0.74 + frac * 0.24;
-        } else if (i === current - 1) {
-          opacity = Math.max(0.14, 0.32 * (1 - frac));
-        } else if (i === current + 2) {
-          opacity = 0.16 + frac * 0.18;
-        }
+        const distance = Math.abs(i - progressIndex);
+        const t = clamp(distance / 1.85, 0, 1);
+        const smooth = t * t * (3 - 2 * t);
+        const opacity = reduced ? 1 : 1 - smooth * 0.82;
         node.style.setProperty("--tl-opacity", opacity.toFixed(3));
       });
 
-      if (!reduced && Math.abs(target - orbY) > 0.35) {
+      if (!reduced && Math.abs(target - orbY) > 0.2) {
         raf = requestAnimationFrame(update);
       } else {
         ticking = false;

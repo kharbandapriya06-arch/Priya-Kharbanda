@@ -98,6 +98,12 @@ function MotifLayer({
   );
 }
 
+const panelClass = {
+  primary: "project-shot--lead",
+  top: "project-shot--top",
+  bottom: "project-shot--bottom",
+} as const;
+
 export function ProjectCover({
   project,
   className,
@@ -105,33 +111,36 @@ export function ProjectCover({
 }: {
   project: Project;
   className?: string;
-  variant?: "primary" | "secondary";
+  variant?: keyof typeof panelClass;
 }) {
-  const secondary = variant === "secondary";
+  const { from, to, motif, images } = project.cover;
+  const image =
+    variant === "top" ? images?.top : variant === "bottom" ? images?.bottom : images?.primary;
+  const background =
+    variant === "top"
+      ? `linear-gradient(205deg, ${to} 0%, ${from} 82%)`
+      : variant === "bottom"
+        ? `linear-gradient(25deg, ${from} 8%, ${to} 100%)`
+        : `linear-gradient(145deg, ${from} 0%, ${to} 120%)`;
 
   return (
-    <div
-      className={cn("project-shot", secondary && "project-shot--side", className)}
-      style={{
-        background: secondary
-          ? `linear-gradient(210deg, ${project.cover.to} 0%, ${project.cover.from} 78%)`
-          : `linear-gradient(145deg, ${project.cover.from} 0%, ${project.cover.to} 120%)`,
-      }}
-    >
-      <div className={cn("project-shot-motif", secondary && "project-shot-motif--crop")}>
-        <MotifLayer
-          motif={project.cover.motif}
-          accent="rgba(255,255,255,0.55)"
-          compact={secondary}
-        />
-      </div>
-      <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-black/10 to-transparent" />
-      {secondary ? (
-        <div className="project-shot-meta">
-          <p className="project-shot-year">{project.year}</p>
-          <p className="project-shot-name">{project.title}</p>
-        </div>
-      ) : null}
+    <div className={cn("project-shot", panelClass[variant], className)} style={{ background }}>
+      {image ? (
+        // eslint-disable-next-line @next/next/no-img-element -- local public project still
+        <img src={image} alt="" className="project-shot-img" />
+      ) : (
+        <>
+          <div
+            className={cn(
+              "project-shot-motif",
+              variant !== "primary" && "project-shot-motif--crop",
+            )}
+          >
+            <MotifLayer motif={motif} accent="rgba(255,255,255,0.55)" compact={variant !== "primary"} />
+          </div>
+          <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-black/10" />
+        </>
+      )}
     </div>
   );
 }

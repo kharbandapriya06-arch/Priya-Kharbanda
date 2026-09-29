@@ -3,29 +3,25 @@ export const processSteps = [
     number: "01",
     title: "Discover",
     icon: "discover",
-    summary:
-      "I dig into the problem space — talking to users, mapping journeys, and spotting friction before a single screen is drawn.",
+    summary: "Understand the people and the problem before a single screen is drawn.",
   },
   {
     number: "02",
     title: "Define",
     icon: "define",
-    summary:
-      "Insights become clear goals, personas, and success metrics so the team knows what “good” looks like before we design.",
+    summary: "Turn what I learn into a direction the work can actually follow.",
   },
   {
     number: "03",
     title: "Design",
     icon: "design",
-    summary:
-      "Wireframes grow into high-fidelity flows, systems, and prototypes — iterated with feedback until the experience feels inevitable.",
+    summary: "Shape the flows, the interface, and the system behind them.",
   },
   {
     number: "04",
     title: "Deliver",
     icon: "deliver",
-    summary:
-      "I partner with engineering to ship polished UI, handoff specs, and refinements that hold up in the real product.",
+    summary: "Ship a considered product, with a handoff that holds up in build.",
   },
 ] as const;
 

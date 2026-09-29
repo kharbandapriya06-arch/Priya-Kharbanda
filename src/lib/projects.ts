@@ -15,16 +15,21 @@ export type Project = {
     from: string;
     to: string;
     motif: Motif;
+    images?: {
+      primary?: string;
+      top?: string;
+      bottom?: string;
+    };
   };
 };
 
 export const projects: Project[] = [
   {
     slug: "smart-scheduling",
-    title: "Smart Scheduling",
-    client: "Client management app",
+    title: "Type Based Poster",
+    client: "Typography",
     year: "2025",
-    services: ["Mobile app", "User journeys", "Prototyping"],
+    services: ["Typography", "User journeys", "Prototyping"],
     summary:
       "A scheduling and client-management app designed around clear journeys, high-fidelity screens, and light automation.",
     challenge:
@@ -34,7 +39,16 @@ export const projects: Project[] = [
     outcome:
       "A complete mobile experience ready for MVP development — journeys, prototype, and interaction model in one system.",
     featured: true,
-    cover: { from: "#141c28", to: "#7a9bb8", motif: "orbit" },
+    cover: {
+      from: "#141c28",
+      to: "#7a9bb8",
+      motif: "orbit",
+      images: {
+        primary: "/Type_based/Type-Based-1.png",
+        top: "/Type_based/Type-Based-2.png",
+        bottom: "/Type_based/Type-Based-3.png",
+      },
+    },
   },
   {
     slug: "coffeebites",
@@ -51,12 +65,21 @@ export const projects: Project[] = [
     outcome:
       "A consistent storefront system — IA, components, and tested UI — ready to build and extend.",
     featured: true,
-    cover: { from: "#2a1c14", to: "#c4a07a", motif: "rings" },
+    cover: {
+      from: "#2a1c14",
+      to: "#c4a07a",
+      motif: "rings",
+      images: {
+        primary: "/Coffee%20BItes/Coffee%20-1.png",
+        top: "/Coffee%20BItes/COffee%20-2.png",
+        bottom: "/Coffee%20BItes/COffee%20-3.png",
+      },
+    },
   },
   {
     slug: "monument",
-    title: "Monument",
-    client: "Editorial website",
+    title: "Augharnath Temple",
+    client: "UI/UX Case Study",
     year: "2025",
     services: ["Web design", "Responsive layout", "UI components"],
     summary:
@@ -68,14 +91,23 @@ export const projects: Project[] = [
     outcome:
       "A responsive site that reads as one piece of design instead of a stack of disconnected pages.",
     featured: true,
-    cover: { from: "#1a1a18", to: "#8a8680", motif: "slash" },
+    cover: {
+      from: "#1a1a18",
+      to: "#8a8680",
+      motif: "slash",
+      images: {
+        primary: "/Auraghnath/Aughurnath%20Temple-1.png",
+        top: "/Auraghnath/Aughurnath%20Temple-3.png",
+        bottom: "/Auraghnath/Aughurnath%20Temple-2.png",
+      },
+    },
   },
   {
     slug: "revive",
-    title: "Revive",
-    client: "Typographic series",
+    title: "Yusuf Bhai Fragrance",
+    client: "Product Breakdown",
     year: "2025",
-    services: ["Typography", "Art direction", "Print"],
+    services: ["UI/UX", "Art direction", "Print"],
     summary:
       "A 24-poster series exploring hierarchy, spacing, and alignment through type alone.",
     challenge:
@@ -85,7 +117,38 @@ export const projects: Project[] = [
     outcome:
       "A complete series that can be shown as a grid or as single pieces without losing the voice of the set.",
     featured: false,
-    cover: { from: "#1c1410", to: "#e24c2a", motif: "type" },
+    cover: {
+      from: "#1c1410",
+      to: "#e24c2a",
+      motif: "type",
+      images: {
+        primary: "/Yusuf_Bhai/Yusuf-1.png",
+        top: "/Yusuf_Bhai/Yusuf-2.png",
+        bottom: "/Yusuf_Bhai/Yusuf-3.png",
+      },
+    },
+  },
+  {
+    slug: "new-project",
+    title: "Glamora",
+    client: "UI/UX Case Study",
+    year: "2026",
+    services: ["UI/UX"],
+    summary: "A new case study. Images and details will sit in this card.",
+    challenge: "",
+    approach: "",
+    outcome: "",
+    featured: true,
+    cover: {
+      from: "#12141c",
+      to: "#8a93a6",
+      motif: "grid",
+      images: {
+        primary: "/Glamora/Glamora-1.png",
+        top: "/Glamora/Glamora-2.png",
+        bottom: "/Glamora/Glamora-3.png",
+      },
+    },
   },
 ];
 

@@ -30,9 +30,10 @@ export const site = {
     "Creative and versatile designer with experience in UI/UX, visual communication, presentation design, and digital content. I craft intuitive interfaces, marketing materials, and business presentations that align with brand and business goals, with a focus on user-centered design in collaborative teams.",
   cvHref: "/priya-kharbanda-cv.pdf",
   socials: [
-    { label: "LinkedIn", href: "https://www.linkedin.com" },
-    { label: "Email", href: "mailto:kharbandapriya06@gmail.com" },
-  ],
+    { label: "LinkedIn", href: "https://www.linkedin.com/in/priya-kharbanda-ab06b6287/", image: "/linkedin.png" },
+    { label: "Email", href: "mailto:kharbandapriya06@gmail.com", image: "/gmail.png" },
+    { label: "Behance", href: "https://www.behance.net/priyakharbanda", image: "/3d%20icon%20behance.png" },
+  ] as const,
   capabilities: [
     "UI/UX design",
     "Wireframing & prototyping",
@@ -80,8 +81,8 @@ export const site = {
     "Runner-up — All India National Online Art Competition",
   ],
   nav: [
-    { href: "#work", label: "Work" },
     { href: "#about", label: "About" },
+    { href: "#experience", label: "Experience" },
     { href: "#contact", label: "Contact" },
   ],
   marquee: [

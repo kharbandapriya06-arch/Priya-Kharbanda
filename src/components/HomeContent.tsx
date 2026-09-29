@@ -3,8 +3,9 @@ import { ContactForm } from "@/components/ContactForm";
 import { Education } from "@/components/Education";
 import { ExperienceTimeline } from "@/components/ExperienceTimeline";
 import { Hero } from "@/components/Hero";
-import { ProcessStairs } from "@/components/ProcessStairs";
 import { ProjectsStack } from "@/components/ProjectsStack";
+import { HowIWork } from "@/components/ServicesOffer";
+import { ServicesStudio } from "@/components/ProcessStairs";
 import { SkillsMarquee } from "@/components/SkillsMarquee";
 import { TechStack } from "@/components/TechStack";
 
@@ -24,9 +25,11 @@ export function HomeContent() {
         <ProjectsStack />
       </section>
 
-      <ProcessStairs />
-
-      <AboutMe />
+      <div className="studio-light">
+        <AboutMe />
+        <HowIWork />
+        <ServicesStudio />
+      </div>
 
       <TechStack />
 
