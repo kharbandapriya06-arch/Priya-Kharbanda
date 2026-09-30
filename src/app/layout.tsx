@@ -2,6 +2,8 @@ import { Bebas_Neue, Geist_Mono, Great_Vibes, Plus_Jakarta_Sans, Syne } from "ne
 import type { Metadata } from "next";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
+import { ScrollTop } from "@/components/ScrollTop";
+import { StudioCursor } from "@/components/StudioCursor";
 import { site } from "@/lib/site";
 import "./globals.css";
 
@@ -67,6 +69,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <Header />
         <main className="flex flex-1 flex-col">{children}</main>
         <Footer />
+        <ScrollTop />
+        <StudioCursor />
       </body>
     </html>
   );

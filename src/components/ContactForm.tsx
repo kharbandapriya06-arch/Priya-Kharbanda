@@ -56,7 +56,7 @@ export function ContactForm() {
       from_name: site.name,
       name: formData.get("name"),
       email: formData.get("email"),
-      website: formData.get("website"),
+      phone: formData.get("phone"),
       message: formData.get("message"),
       botcheck: formData.get("botcheck") ? "true" : "",
     };
@@ -117,20 +117,23 @@ export function ContactForm() {
           </h2>
 
           <div className="contact-actions">
-            <a className="contact-btn contact-btn--solid" href={`mailto:${site.email}`}>
-              Email me
-            </a>
-            <a
-              className="contact-btn"
-              href={site.socials[0]?.href}
-              target="_blank"
-              rel="noreferrer"
-            >
-              LinkedIn
-            </a>
-            <a className="contact-btn" href={site.cvHref} target="_blank" rel="noreferrer">
-              Resume
-            </a>
+            {site.socials.map((social) => {
+              const external = social.href.startsWith("http");
+              return (
+                <a
+                  key={social.label}
+                  className="contact-icon"
+                  href={social.href}
+                  aria-label={social.label}
+                  {...(external
+                    ? { target: "_blank", rel: "noopener noreferrer" }
+                    : {})}
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element -- local public icon */}
+                  <img src={social.image} alt="" />
+                </a>
+              );
+            })}
           </div>
 
         </div>
@@ -162,48 +165,46 @@ export function ContactForm() {
                 aria-hidden="true"
               />
 
-              <div className="contact-fields">
-                <label className="sr-only" htmlFor="name">
-                  Your name
-                </label>
-                <input
-                  id="name"
-                  name="name"
-                  type="text"
-                  required
-                  autoComplete="name"
-                  className="contact-input"
-                  placeholder="Your name*"
-                />
-
-                <label className="sr-only" htmlFor="email">
-                  Email address
-                </label>
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  required
-                  autoComplete="email"
-                  className="contact-input"
-                  placeholder="Email address*"
-                />
-              </div>
-
-              <label className="sr-only" htmlFor="website">
-                Your website
+              <label className="sr-only" htmlFor="name">
+                Your name
               </label>
               <input
-                id="website"
-                name="website"
+                id="name"
+                name="name"
                 type="text"
-                autoComplete="url"
+                required
+                autoComplete="name"
                 className="contact-input"
-                placeholder="Your website (optional)"
+                placeholder="Your name"
+              />
+
+              <label className="sr-only" htmlFor="email">
+                Email
+              </label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                required
+                autoComplete="email"
+                className="contact-input"
+                placeholder="Email"
+              />
+
+              <label className="sr-only" htmlFor="phone">
+                Phone number
+              </label>
+              <input
+                id="phone"
+                name="phone"
+                type="tel"
+                autoComplete="tel"
+                className="contact-input"
+                placeholder="Phone number"
               />
 
               <label className="sr-only" htmlFor="message">
-                Message
+                Write your message
               </label>
               <textarea
                 id="message"
@@ -211,7 +212,7 @@ export function ContactForm() {
                 required
                 rows={4}
                 className="contact-input contact-input--area"
-                placeholder="Write your message…"
+                placeholder="Write your message"
               />
 
               {status === "missing-key" && (
@@ -232,16 +233,18 @@ export function ContactForm() {
                 className="contact-submit"
               >
                 <span>{status === "submitting" ? "Sending…" : "Send message"}</span>
-                <svg viewBox="0 0 16 16" aria-hidden>
-                  <path
-                    d="M3 8h10M9 4l4 4-4 4"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.6"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
+                <span className="contact-submit-arrow" aria-hidden>
+                  <svg viewBox="0 0 16 16">
+                    <path
+                      d="M3 8h10M9 4l4 4-4 4"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.6"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </span>
               </button>
             </form>
           )}

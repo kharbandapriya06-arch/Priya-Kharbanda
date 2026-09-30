@@ -12,8 +12,8 @@ export function Intro({ onComplete }: { onComplete: () => void }) {
       return () => window.clearTimeout(skip);
     }
 
-    const hold = window.setTimeout(() => setPhase("out"), 2200);
-    const done = window.setTimeout(onComplete, 2800);
+    const hold = window.setTimeout(() => setPhase("out"), 2400);
+    const done = window.setTimeout(onComplete, 3100);
 
     return () => {
       window.clearTimeout(hold);
@@ -23,24 +23,14 @@ export function Intro({ onComplete }: { onComplete: () => void }) {
 
   return (
     <div className={`intro intro--${phase}`} aria-hidden="true">
-      <div className="intro-glow intro-glow--a" />
-      <div className="intro-glow intro-glow--b" />
-      <div className="intro-glow intro-glow--c" />
-
       <div className="intro-inner">
-        <p className="intro-kicker">Welcome</p>
         <p className="intro-brand">Priya Kharbanda</p>
-        <div className="intro-script-wrap">
-          <p className="intro-label">Portfolio</p>
-        </div>
+        <p className="intro-script">Portfolio</p>
 
         <div className="intro-loader">
           <span className="intro-ring" />
           <span className="intro-ring intro-ring--inner" />
           <span className="intro-core" />
-        </div>
-        <div className="intro-bar" aria-hidden>
-          <span className="intro-bar-fill" />
         </div>
       </div>
     </div>

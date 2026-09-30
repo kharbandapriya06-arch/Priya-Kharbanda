@@ -45,7 +45,6 @@ export function ServicesStudio() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [inView, setInView] = useState(false);
   const [paused, setPaused] = useState(false);
-  const active = services[activeIndex];
 
   function syncPause(hover: boolean, focus: boolean) {
     hoverRef.current = hover;
@@ -109,9 +108,9 @@ export function ServicesStudio() {
         }}
       >
         <div className="process-intro">
-          <p className="process-kicker">003</p>
+          <p className="process-kicker">004</p>
           <h2 className="process-heading">
-            The services <span className="text-gradient">I offer</span>
+            The services I offer
           </h2>
           <p className="process-lead">
             Specifically designed to meet your needs — pick a service, or let them cycle.
@@ -139,9 +138,6 @@ export function ServicesStudio() {
                   onMouseEnter={() => setActiveIndex(index)}
                   onFocus={() => setActiveIndex(index)}
                 >
-                  <span className="process-nav-icon" aria-hidden>
-                    <ServiceGlyph name={step.icon} />
-                  </span>
                   <span className="process-nav-text">
                     <span className="process-nav-num">{step.number}</span>
                     <span className="process-nav-title">{step.title}</span>
@@ -153,27 +149,32 @@ export function ServicesStudio() {
           </div>
         </div>
 
-        <div
-          id="service-panel"
-          role="tabpanel"
-          aria-labelledby={`service-tab-${activeIndex}`}
-          className={cn("process-panel", `is-${active.icon}`)}
-        >
-          <div key={active.number} className="process-panel-body">
-            <p className="process-panel-watermark" aria-hidden>
-              {active.number}
-            </p>
-            <span className="process-panel-icon">
-              <ServiceGlyph name={active.icon} />
-            </span>
-            <p className="process-panel-kicker">Service {active.number}</p>
-            <h3 className="process-panel-title">{active.title}</h3>
-            <p className="process-panel-copy">{active.summary}</p>
-            <p className="process-panel-count">
-              {String(activeIndex + 1).padStart(2, "0")}
-              <span> / {String(services.length).padStart(2, "0")}</span>
-            </p>
-          </div>
+        <div className="process-deck" id="service-panel">
+          {services.map((step, index) => {
+            const diff = ((index - activeIndex + services.length + 2) % services.length) - 2;
+            const pose =
+              diff === 0 ? "is-front" : diff === -1 ? "is-left" : diff === 1 ? "is-right" : "is-back";
+            return (
+              <button
+                key={step.number}
+                type="button"
+                className={cn("process-deck-card", `is-${step.icon}`, pose)}
+                aria-hidden={pose !== "is-front"}
+                tabIndex={pose === "is-front" ? -1 : 0}
+                onClick={() => setActiveIndex(index)}
+              >
+                <span className="process-deck-mark" aria-hidden>
+                  {step.number}
+                </span>
+                <span className="process-deck-icon">
+                  <ServiceGlyph name={step.icon} />
+                </span>
+                <span className="process-deck-kicker">Service {step.number}</span>
+                <span className="process-deck-title">{step.title}</span>
+                <span className="process-deck-copy">{step.summary}</span>
+              </button>
+            );
+          })}
         </div>
       </div>
     </section>

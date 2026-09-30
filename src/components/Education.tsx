@@ -4,7 +4,7 @@ export function Education() {
   return (
     <section className="education" aria-label="Education">
       <div className="education-intro">
-        <p className="education-kicker">Learning</p>
+        <p className="education-kicker">007</p>
         <h2 className="education-heading">
           <span className="text-gradient">Education</span>
         </h2>

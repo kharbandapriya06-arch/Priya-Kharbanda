@@ -40,7 +40,10 @@ export function AboutMe() {
         </div>
 
         <div className="about-me-copy">
-          <p className="about-me-kicker">About me</p>
+          <p className="about-me-kicker">
+            <span>002</span>
+            About me
+          </p>
           <h2 className="about-me-heading">
             I like figuring out why things work, and why they don&apos;t.
           </h2>

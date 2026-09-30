@@ -156,6 +156,7 @@ export function TechStack() {
 
       <div className="techstack-stage">
         <div className="techstack-core">
+          <p className="techstack-kicker">005</p>
           <h2 className="techstack-title">
             My Creative
             <span>Toolkit</span>

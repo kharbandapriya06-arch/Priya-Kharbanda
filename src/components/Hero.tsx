@@ -149,8 +149,8 @@ export function Hero() {
         <div className="hero-visual-glow" aria-hidden />
         <div className="hero-bubble" role="note">
           <p className="hero-bubble-text">
-            <span aria-hidden>👋</span> Hey, I’m {site.shortName}. I like getting
-            to the root of things.
+            <span aria-hidden>👋</span> Hey, I’m {site.name}. I like getting to
+            the root of things.
           </p>
         </div>
 
@@ -161,7 +161,6 @@ export function Hero() {
             alt=""
             className="hero-portrait"
           />
-          <p className="hero-portrait-name">{site.name}</p>
         </div>
       </div>
     </section>

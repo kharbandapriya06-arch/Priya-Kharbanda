@@ -105,6 +105,7 @@ export function ExperienceTimeline() {
 
   return (
     <section className="timeline">
+      <p className="timeline-kicker">006</p>
       <h2 className="timeline-heading">
         <span className="text-gradient">Freelance</span> & Internships
       </h2>
