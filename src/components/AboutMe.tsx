@@ -42,6 +42,7 @@ export function AboutMe() {
         <div className="about-me-copy">
           <p className="about-me-kicker">
             <span>002</span>
+            <span aria-hidden>·</span>
             About me
           </p>
           <h2 className="about-me-heading">

@@ -70,12 +70,16 @@ export function ExperienceTimeline() {
         }
       }
 
+      const activeIndex = Math.round(progressIndex);
+      const inView = trackRect.top < focusY && trackRect.bottom > focusY;
+
       items.forEach((node, i) => {
         const distance = Math.abs(i - progressIndex);
         const t = clamp(distance / 1.85, 0, 1);
         const smooth = t * t * (3 - 2 * t);
         const opacity = reduced ? 1 : 1 - smooth * 0.82;
         node.style.setProperty("--tl-opacity", opacity.toFixed(3));
+        node.classList.toggle("is-active", inView && i === activeIndex);
       });
 
       if (!reduced && Math.abs(target - orbY) > 0.2) {
@@ -153,7 +157,17 @@ export function ExperienceTimeline() {
               <span className="timeline-year">{role.year}</span>
             </div>
 
-            <p className="timeline-copy">{role.summary}</p>
+            <div className="timeline-right">
+              <p className="timeline-copy">{role.summary}</p>
+              {role.shots ? (
+                <div className="timeline-fan" aria-hidden>
+                  {role.shots.map((src) => (
+                    // eslint-disable-next-line @next/next/no-img-element -- local project stills
+                    <img key={src} src={src} alt="" className="timeline-shot" />
+                  ))}
+                </div>
+              ) : null}
+            </div>
           </article>
         ))}
       </div>

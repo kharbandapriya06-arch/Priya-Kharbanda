@@ -1,24 +1,34 @@
+export type TechGroup = "design" | "build" | "plan";
+
 export type TechTool = {
   name: string;
   /** Drop the logo in `/public/tools/` and set this path (e.g. `/tools/figma.png`). */
   src: string | null;
-  /** Horizontal position as % of the orbit stage (0–100). */
-  x: number;
-  /** Vertical position as % of the orbit stage (0–100). */
-  y: number;
-  size: "sm" | "md" | "lg";
-  delay: number;
+  group: TechGroup;
+  note: string;
 };
 
+export const techGroups: { id: "all" | TechGroup; label: string }[] = [
+  { id: "all", label: "All" },
+  { id: "design", label: "Design" },
+  { id: "build", label: "Build" },
+  { id: "plan", label: "Plan" },
+];
+
 export const techTools: TechTool[] = [
-  { name: "Figma", src: "/tools/figma.png", x: 12, y: 18, size: "lg", delay: 0 },
-  { name: "Framer", src: "/tools/framer.png", x: 78, y: 14, size: "lg", delay: 0.4 },
-  { name: "Spline", src: "/tools/Spline.png", x: 88, y: 42, size: "lg", delay: 0.8 },
-  { name: "Photoshop", src: "/tools/Adobe_Photoshop.png", x: 82, y: 72, size: "md", delay: 1.2 },
-  { name: "Notion", src: "/tools/Notion.png", x: 52, y: 86, size: "lg", delay: 0.2 },
-  { name: "Lovable", src: "/tools/Lovable.png", x: 18, y: 78, size: "md", delay: 1.6 },
-  { name: "Webflow", src: "/tools/Webflow.png", x: 6, y: 48, size: "md", delay: 1.0 },
-  { name: "WordPress", src: "/tools/Wordpress.png", x: 68, y: 58, size: "sm", delay: 0.6 },
-  { name: "Adobe XD", src: "/tools/Adobe_xd_.png", x: 28, y: 10, size: "sm", delay: 1.3 },
-  { name: "Canva", src: "/tools/Canva.png", x: 92, y: 68, size: "md", delay: 0.9 },
+  { name: "Figma", src: "/tools/figma.png", group: "design", note: "Interfaces, flows, and design systems." },
+  { name: "Framer", src: "/tools/framer.png", group: "design", note: "Sites that move, from layout to publish." },
+  { name: "Spline", src: "/tools/Spline.png", group: "design", note: "3D objects made for the screen." },
+  { name: "Photoshop", src: "/tools/Adobe_Photoshop.png", group: "design", note: "Image work, retouching, and detail." },
+  { name: "Adobe XD", src: "/tools/Adobe_xd_.png", group: "design", note: "Early screens and clickable drafts." },
+  { name: "Canva", src: "/tools/Canva.png", group: "design", note: "Fast visuals when the brief is short." },
+  { name: "Webflow", src: "/tools/Webflow.png", group: "build", note: "Visual sites with real layout control." },
+  { name: "WordPress", src: "/tools/Wordpress.png", group: "build", note: "Content sites that other people can edit." },
+  { name: "Lovable", src: "/tools/Lovable.png", group: "build", note: "A quick way into a working draft." },
+  { name: "HTML", src: "/tools/HTML_5.png", group: "build", note: "The structure under the page." },
+  { name: "CSS", src: "/tools/CSS_3.png", group: "build", note: "Layout, type, and the feel of a screen." },
+  { name: "JavaScript", src: "/tools/JavaScript.png", group: "build", note: "The interaction on top of the layout." },
+  { name: "React", src: "/tools/React.js.png", group: "build", note: "Interface pieces that stay in sync." },
+  { name: "Node.js", src: "/tools/Node.js.png", group: "build", note: "The side of the product you don’t see." },
+  { name: "Notion", src: "/tools/Notion.png", group: "plan", note: "Notes, briefs, and the plan beside the work." },
 ];
