@@ -1,9 +1,96 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { site } from "@/lib/site";
 import { cn } from "@/lib/utils";
+
+type Theme = "dark" | "light";
+
+const themeColors: Record<Theme, string> = {
+  dark: "#151C18",
+  light: "#F7F5EF",
+};
+
+function readTheme(): Theme {
+  if (typeof document === "undefined") return "dark";
+  return document.documentElement.dataset.theme === "light" ? "light" : "dark";
+}
+
+function applyTheme(theme: Theme) {
+  document.documentElement.dataset.theme = theme;
+  try {
+    localStorage.setItem("theme", theme);
+  } catch {
+    /* storage can be blocked; the toggle still works for this visit */
+  }
+  document
+    .querySelector('meta[name="theme-color"]')
+    ?.setAttribute("content", themeColors[theme]);
+}
+
+function ThemeToggle() {
+  const [theme, setTheme] = useState<Theme>("dark");
+
+  useLayoutEffect(() => {
+    const stored = (() => {
+      try {
+        return localStorage.getItem("theme");
+      } catch {
+        return null;
+      }
+    })();
+    const next: Theme = stored === "light" || stored === "dark" ? stored : readTheme();
+    applyTheme(next);
+    setTheme(next);
+  }, []);
+
+  function choose(next: Theme) {
+    setTheme(next);
+    applyTheme(next);
+  }
+
+  return (
+    <div className="site-nav-theme" role="group" aria-label="Color theme">
+      <span className="site-nav-theme-thumb" aria-hidden />
+      <button
+        type="button"
+        className="site-nav-theme-btn"
+        aria-label="Dark"
+        aria-pressed={theme === "dark"}
+        onClick={() => choose("dark")}
+      >
+        <svg viewBox="0 0 16 16" aria-hidden>
+          <path
+            d="M13.1 10.35A5.35 5.35 0 0 1 5.65 2.9 5.4 5.4 0 1 0 13.1 10.35Z"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.4"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </button>
+      <button
+        type="button"
+        className="site-nav-theme-btn"
+        aria-label="Light"
+        aria-pressed={theme === "light"}
+        onClick={() => choose("light")}
+      >
+        <svg viewBox="0 0 16 16" aria-hidden>
+          <circle cx="8" cy="8" r="2.35" fill="none" stroke="currentColor" strokeWidth="1.4" />
+          <path
+            d="M8 1.7v1.35M8 12.95V14.3M1.7 8h1.35M12.95 8H14.3M3.5 3.5l.95.95M11.55 11.55l.95.95M12.5 3.5l-.95.95M4.45 11.55l-.95.95"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.4"
+            strokeLinecap="round"
+          />
+        </svg>
+      </button>
+    </div>
+  );
+}
 
 const navItems = [
   { href: "/#about", hash: "#about", label: "About" },
@@ -105,6 +192,8 @@ export function Header() {
             </a>
           ))}
         </nav>
+
+        <ThemeToggle />
 
         <span className="site-nav-dot" aria-hidden />
       </div>

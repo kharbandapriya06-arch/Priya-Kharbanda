@@ -1,5 +1,5 @@
 import { Bebas_Neue, Geist_Mono, Great_Vibes, Plus_Jakarta_Sans, Syne } from "next/font/google";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { ScrollTop } from "@/components/ScrollTop";
@@ -38,9 +38,12 @@ const greatVibes = Great_Vibes({
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
+export const viewport: Viewport = {
+  themeColor: "#151C18",
+};
+
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  themeColor: "#050505",
   title: {
     default: `${site.name} — ${site.role}`,
     template: `%s — ${site.name}`,
@@ -63,8 +66,16 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
+      suppressHydrationWarning
       className={`${plusJakarta.variable} ${syne.variable} ${geistMono.variable} ${bebas.variable} ${greatVibes.variable} h-full antialiased`}
     >
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{var stored=localStorage.getItem("theme");var theme=stored==="light"||stored==="dark"?stored:"dark";document.documentElement.setAttribute("data-theme",theme);var meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.setAttribute("content",theme==="light"?"#F7F5EF":"#151C18");}catch(e){}`,
+          }}
+        />
+      </head>
       <body className="min-h-full flex flex-col bg-paper text-ink">
         <Header />
         <main className="flex flex-1 flex-col">{children}</main>

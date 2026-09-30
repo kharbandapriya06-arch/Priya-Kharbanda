@@ -3,7 +3,7 @@ export const site = {
   shortName: "Priya",
   /** Drop the file in `/public` and set this path (e.g. `/avatar.png`). */
   avatar: "/avatar_3d.png",
-  heroAvatar: "/avatar_3d_new.png",
+  heroAvatar: "/hero_pic_2.png",
   role: "Designer",
   roles: [
     "Branding Designer",

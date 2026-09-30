@@ -31,17 +31,17 @@ export function Hero() {
 
   return (
     <section className="hero" id="top">
-      <a className="hero-scroll" href="#work">
-        <span className="hero-scroll-mouse" aria-hidden>
-          <span className="hero-scroll-wheel" />
-        </span>
-        <span className="hero-scroll-track" aria-hidden>
-          <span className="hero-scroll-dot" />
-        </span>
-        <span className="hero-scroll-label">Scroll</span>
-      </a>
-
       <div className="hero-copy">
+        <a className="hero-scroll" href="#work">
+          <span className="hero-scroll-mouse" aria-hidden>
+            <span className="hero-scroll-wheel" />
+          </span>
+          <span className="hero-scroll-track" aria-hidden>
+            <span className="hero-scroll-dot" />
+          </span>
+          <span className="hero-scroll-label">Scroll</span>
+        </a>
+
         <h1 className="hero-title" aria-live="polite">
           <span className="hero-title-slot hero-title-slot--top">
             {site.heroTitles.map((title, i) => (
@@ -146,21 +146,35 @@ export function Hero() {
       </div>
 
       <div className="hero-visual">
-        <div className="hero-visual-glow" aria-hidden />
-        <div className="hero-bubble" role="note">
-          <p className="hero-bubble-text">
-            <span aria-hidden>👋</span> Hey, I’m {site.name}. I like getting to
-            the root of things.
-          </p>
-        </div>
-
         <div className="hero-portrait-slot">
+          <span className="hero-frame-circle" aria-hidden />
+          <span className="hero-frame-sage" aria-hidden />
+          <span className="hero-frame-forest" aria-hidden />
+          <svg className="hero-frame-spark" viewBox="0 0 24 24" aria-hidden>
+            <path
+              d="M12 1.2 13.4 8.8 21 12l-7.6 1.6L12 22.8 10.6 15.2 3 12l7.6-1.6Z"
+              fill="currentColor"
+            />
+          </svg>
           {/* eslint-disable-next-line @next/next/no-img-element -- local public portrait */}
           <img
             src={site.heroAvatar}
-            alt=""
+            alt={site.name}
             className="hero-portrait"
           />
+          <p className="hero-nameplate">
+            <span>
+              {site.name.split(" ")[0]}
+              <br />
+              {site.name.split(" ").slice(1).join(" ")}
+            </span>
+            <svg className="hero-nameplate-gem" viewBox="0 0 12 12" aria-hidden>
+              <path
+                d="M6 .7 7.1 4.9 11.3 6 7.1 7.1 6 11.3 4.9 7.1.7 6 4.9 4.9Z"
+                fill="currentColor"
+              />
+            </svg>
+          </p>
         </div>
       </div>
     </section>
