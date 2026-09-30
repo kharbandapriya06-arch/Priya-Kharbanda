@@ -11,6 +11,15 @@ export type Project = {
   approach: string;
   outcome: string;
   featured: boolean;
+  study: {
+    eyebrow: string;
+    headline: string;
+    accent: string;
+    role: string;
+    duration: string;
+    type: string;
+    status: string;
+  };
   cover: {
     from: string;
     to: string;
@@ -29,16 +38,25 @@ export const projects: Project[] = [
     title: "Type Based Poster",
     client: "Typography",
     year: "2025",
-    services: ["Typography", "User journeys", "Prototyping"],
+    services: ["Typography", "Poster design", "Hierarchy"],
     summary:
-      "A scheduling and client-management app designed around clear journeys, high-fidelity screens, and light automation.",
+      "A poster built from type alone, where scale, spacing, and alignment do the visual work.",
     challenge:
-      "Booking and follow-up lived in scattered chats and calendars. The product needed a flow that felt simple for first-time users without hiding the tools power users need.",
+      "The piece had to read as one poster and still hold from across a room. No photography and no illustration to lean on.",
     approach:
-      "I mapped user journeys, then designed wireframes and high-fidelity mobile screens in Figma. Interactive prototypes carried the micro-interactions; AI-assisted scheduling and automated notifications were designed into the core loop rather than bolted on.",
+      "I treated type size, measure, and alignment as the subject. Hierarchy comes from scale and spacing, not from decoration around the words.",
     outcome:
-      "A complete mobile experience ready for MVP development — journeys, prototype, and interaction model in one system.",
+      "A poster that stands on its own and still sits comfortably beside the rest of the type work.",
     featured: true,
+    study: {
+      eyebrow: "Typography · 2025",
+      headline: "A poster where type",
+      accent: "does all the work.",
+      role: "Graphic Designer",
+      duration: "2025",
+      type: "Poster",
+      status: "Case study",
+    },
     cover: {
       from: "#141c28",
       to: "#7a9bb8",
@@ -65,6 +83,15 @@ export const projects: Project[] = [
     outcome:
       "A consistent storefront system — IA, components, and tested UI — ready to build and extend.",
     featured: true,
+    study: {
+      eyebrow: "E-commerce · 2025",
+      headline: "A storefront that stays premium",
+      accent: "without a longer checkout.",
+      role: "UI/UX Designer",
+      duration: "2025",
+      type: "E-commerce",
+      status: "Case study",
+    },
     cover: {
       from: "#2a1c14",
       to: "#c4a07a",
@@ -91,6 +118,15 @@ export const projects: Project[] = [
     outcome:
       "A responsive site that reads as one piece of design instead of a stack of disconnected pages.",
     featured: true,
+    study: {
+      eyebrow: "UI/UX · 2025",
+      headline: "A calmer site for",
+      accent: "Augharnath Temple.",
+      role: "UI/UX Designer",
+      duration: "2025",
+      type: "Website",
+      status: "Case study",
+    },
     cover: {
       from: "#1a1a18",
       to: "#8a8680",
@@ -109,14 +145,23 @@ export const projects: Project[] = [
     year: "2025",
     services: ["UI/UX", "Art direction", "Print"],
     summary:
-      "A 24-poster series exploring hierarchy, spacing, and alignment through type alone.",
+      "A product breakdown for Yusuf Bhai Fragrance, from the pack to the screen.",
     challenge:
-      "The brief was to make a set that holds together as a collection while each poster still works on its own — no photography, no illustration.",
+      "The fragrance needed a clear story across touchpoints. The layout could not compete with the product.",
     approach:
-      "I designed twenty-four posters as a typographic system: scale, measure, and alignment doing the visual work. Hierarchy is the subject, not decoration around it.",
+      "I set a restrained system of type, spacing, and product stills so the scent story stays first, on the pack and on the screen.",
     outcome:
-      "A complete series that can be shown as a grid or as single pieces without losing the voice of the set.",
+      "A breakdown that reads as a set or as single frames without losing the brand voice.",
     featured: false,
+    study: {
+      eyebrow: "Product · 2025",
+      headline: "Breaking down Yusuf Bhai",
+      accent: "from pack to screen.",
+      role: "Product & Graphic Designer",
+      duration: "2025",
+      type: "Product breakdown",
+      status: "Case study",
+    },
     cover: {
       from: "#1c1410",
       to: "#e24c2a",
@@ -134,11 +179,24 @@ export const projects: Project[] = [
     client: "UI/UX Case Study",
     year: "2026",
     services: ["UI/UX"],
-    summary: "A new case study. Images and details will sit in this card.",
-    challenge: "",
-    approach: "",
-    outcome: "",
+    summary:
+      "A UI/UX case study for Glamora, shaping the first screens around one clear next step.",
+    challenge:
+      "The brand look was already there. The path through the product was not. It was hard to tell what to do first.",
+    approach:
+      "I designed the key screens around one action at a time, with a simple hierarchy and room for the product imagery.",
+    outcome:
+      "A set of screens where the next step stays obvious from the first look to the last.",
     featured: true,
+    study: {
+      eyebrow: "UI/UX · 2026",
+      headline: "Glamora, designed around",
+      accent: "one clear next step.",
+      role: "UI/UX Designer",
+      duration: "2026",
+      type: "UI/UX case study",
+      status: "Case study",
+    },
     cover: {
       from: "#12141c",
       to: "#8a93a6",

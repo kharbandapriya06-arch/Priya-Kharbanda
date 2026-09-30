@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, type CSSProperties } from "react";
+import Link from "next/link";
 import { ProjectCover } from "@/components/ProjectCover";
 import { projects } from "@/lib/projects";
 import type { Project } from "@/lib/projects";
@@ -40,7 +41,8 @@ function ProjectCard({
       className="project-row"
       style={{ "--stack-i": index } as CSSProperties}
     >
-      <div
+      <Link
+        href={`/work/${project.slug}`}
         className="project-card"
         onPointerMove={onPointerMove}
         onPointerLeave={onPointerLeave}
@@ -61,7 +63,7 @@ function ProjectCard({
             <ProjectCover project={project} variant="bottom" />
           </div>
         </div>
-      </div>
+      </Link>
     </article>
   );
 }

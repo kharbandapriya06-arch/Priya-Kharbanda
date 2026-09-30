@@ -1,16 +1,18 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 import { site } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
 const navItems = [
-  { href: "#about", label: "About" },
-  { href: "#experience", label: "Experience" },
-  { href: "#contact", label: "Contact" },
+  { href: "/#about", hash: "#about", label: "About" },
+  { href: "/#experience", hash: "#experience", label: "Experience" },
+  { href: "/#contact", hash: "#contact", label: "Contact" },
 ] as const;
 
 export function Header() {
+  const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(false);
   const [active, setActive] = useState("");
   const lastY = useRef(0);
@@ -66,7 +68,7 @@ export function Header() {
         className={cn("site-nav-pill", collapsed && "is-collapsed")}
         data-collapsed={collapsed ? "true" : "false"}
       >
-        <a href="#top" className="site-nav-brand" aria-label={`${site.name} — home`}>
+        <a href="/" className="site-nav-brand" aria-label={`${site.name} — home`}>
           <span className="site-nav-avatar">
             {site.avatar ? (
               // eslint-disable-next-line @next/next/no-img-element -- local public avatar asset
@@ -94,7 +96,10 @@ export function Header() {
               key={item.label}
               href={item.href}
               tabIndex={collapsed ? -1 : undefined}
-              className={cn("site-nav-link", active === item.href && "is-active")}
+              className={cn(
+                "site-nav-link",
+                pathname === "/" && active === item.hash && "is-active",
+              )}
             >
               {item.label}
             </a>
