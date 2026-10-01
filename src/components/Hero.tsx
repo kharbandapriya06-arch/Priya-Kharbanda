@@ -4,6 +4,12 @@ import { useEffect, useState } from "react";
 import { site } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
+const roles = [
+  { left: "Graphic", right: "Designer" },
+  { left: "UI/UX", right: "Designer" },
+  { left: "Product", right: "Designer" },
+] as const;
+
 export function Hero() {
   const [index, setIndex] = useState(0);
   const [prevIndex, setPrevIndex] = useState<number | null>(null);
@@ -14,7 +20,7 @@ export function Hero() {
 
     const id = window.setInterval(() => {
       setIndex((current) => {
-        const next = (current + 1) % site.heroTitles.length;
+        const next = (current + 1) % roles.length;
         window.setTimeout(() => setPrevIndex(current), 0);
         return next;
       });
@@ -31,153 +37,114 @@ export function Hero() {
 
   return (
     <section className="hero" id="top">
+      <a className="hero-scroll" href="#work">
+        <span className="hero-scroll-mouse" aria-hidden>
+          <span className="hero-scroll-wheel" />
+        </span>
+        <span className="hero-scroll-track" aria-hidden>
+          <span className="hero-scroll-dot" />
+        </span>
+        <span className="hero-scroll-label">Scroll</span>
+      </a>
+
       <div className="hero-copy">
-        <a className="hero-scroll" href="#work">
-          <span className="hero-scroll-mouse" aria-hidden>
-            <span className="hero-scroll-wheel" />
-          </span>
-          <span className="hero-scroll-track" aria-hidden>
-            <span className="hero-scroll-dot" />
-          </span>
-          <span className="hero-scroll-label">Scroll</span>
-        </a>
-
-        <h1 className="hero-title" aria-live="polite">
-          <span className="hero-title-slot hero-title-slot--top">
-            {site.heroTitles.map((title, i) => (
-              <span
-                key={`top-${title.top}-${i}`}
-                className={cn(
-                  "hero-title-word",
-                  "hero-title-accent",
-                  i === index && "is-active",
-                  i === prevIndex && "is-exit",
-                )}
-                aria-hidden={i !== index}
-              >
-                {title.top}
-              </span>
-            ))}
-          </span>
-
-          <span className="hero-title-fixed">based</span>
-
-          <span className="hero-title-slot hero-title-slot--bottom">
-            {site.heroTitles.map((title, i) => (
-              <span
-                key={`bottom-${title.bottom}-${i}`}
-                className={cn(
-                  "hero-title-word",
-                  "hero-title-rest",
-                  i === index && "is-active",
-                  i === prevIndex && "is-exit",
-                )}
-                aria-hidden={i !== index}
-              >
-                {title.bottom}
-              </span>
-            ))}
-          </span>
+        <h1 className="hero-title hero-split">
+          <span className="hero-split-side hero-split-side--left">I am Priya</span>
+          <span className="hero-split-gap" aria-hidden />
+          <span className="hero-split-side hero-split-side--right">Kharbanda</span>
         </h1>
-
-        <p className="hero-lead">
-          I design clear interfaces for{" "}
-          <strong>product workflows, brand systems, and digital tools</strong> —
-          and I care a lot about the <strong>why</strong> behind every decision.
+        <p className="hero-role hero-split" aria-live="polite">
+          <span className="hero-split-side hero-split-side--left">
+            <span className="hero-role-slot">
+              {roles.map((role, i) => (
+                <span
+                  key={role.left}
+                  className={cn(
+                    "hero-title-word",
+                    "hero-title-accent",
+                    i === index && "is-active",
+                    i === prevIndex && "is-exit",
+                  )}
+                  aria-hidden={i !== index}
+                >
+                  {role.left}
+                </span>
+              ))}
+            </span>
+          </span>
+          <span className="hero-split-gap" aria-hidden />
+          <span className="hero-split-side hero-split-side--right hero-title-accent">
+            Designer
+          </span>
         </p>
-
-        <div className="hero-actions">
-          <a className="hero-btn hero-btn--solid" href="#work">
-            <span className="hero-btn-label">Explore my work</span>
-            <span className="hero-btn-arrow" aria-hidden>
-              <svg viewBox="0 0 16 16">
-                <path
-                  d="M3 8h10M9 4l4 4-4 4"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.6"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </span>
-          </a>
-          <a
-            className="hero-btn"
-            href={site.cvHref}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <span className="hero-btn-label">View resume</span>
-            <span className="hero-btn-arrow" aria-hidden>
-              <svg viewBox="0 0 16 16">
-                <path
-                  d="M3 8h10M9 4l4 4-4 4"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.6"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </span>
-          </a>
-        </div>
-
-        <div className="hero-socials">
-          {site.socials.map((social) => {
-            const external = social.href.startsWith("http");
-            return (
-              <a
-                key={social.label}
-                className="hero-social"
-                href={social.href}
-                aria-label={social.label}
-                {...(external
-                  ? { target: "_blank", rel: "noopener noreferrer" }
-                  : {})}
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element -- local public icon */}
-                <img src={social.image} alt="" />
-              </a>
-            );
-          })}
-        </div>
       </div>
 
       <div className="hero-visual">
-        <div className="hero-portrait-slot">
-          <span className="hero-frame-circle" aria-hidden />
-          <span className="hero-frame-sage" aria-hidden />
-          <span className="hero-frame-forest" aria-hidden />
-          <svg className="hero-frame-spark" viewBox="0 0 24 24" aria-hidden>
-            <path
-              d="M12 1.2 13.4 8.8 21 12l-7.6 1.6L12 22.8 10.6 15.2 3 12l7.6-1.6Z"
-              fill="currentColor"
-            />
-          </svg>
-          {/* eslint-disable-next-line @next/next/no-img-element -- local public portrait */}
-          <img
-            src={site.heroAvatar}
-            alt={site.name}
-            className="hero-portrait"
-          />
-          <p className="hero-nameplate">
-            <span>
-              {site.name.split(" ")[0]}
-              <br />
-              {site.name.split(" ").slice(1).join(" ")}
-            </span>
-            <svg className="hero-nameplate-gem" viewBox="0 0 12 12" aria-hidden>
+        {/* eslint-disable-next-line @next/next/no-img-element -- local public portrait */}
+        <img
+          src={site.heroAvatar}
+          alt={site.name}
+          className="hero-portrait"
+        />
+      </div>
+
+      <div className="hero-actions">
+        <a className="hero-btn hero-btn--solid" href="#work">
+          <span className="hero-btn-label">Explore my work</span>
+          <span className="hero-btn-arrow" aria-hidden>
+            <svg viewBox="0 0 16 16">
               <path
-                d="M6 .7 7.1 4.9 11.3 6 7.1 7.1 6 11.3 4.9 7.1.7 6 4.9 4.9Z"
-                fill="currentColor"
+                d="M3 8h10M9 4l4 4-4 4"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.6"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               />
             </svg>
-          </p>
-        </div>
+          </span>
+        </a>
+        <a
+          className="hero-btn"
+          href={site.cvHref}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <span className="hero-btn-label">View resume</span>
+          <span className="hero-btn-arrow" aria-hidden>
+            <svg viewBox="0 0 16 16">
+              <path
+                d="M3 8h10M9 4l4 4-4 4"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.6"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </span>
+        </a>
+      </div>
+
+      <div className="hero-socials">
+        {site.socials.map((social) => {
+          const external = social.href.startsWith("http");
+          return (
+            <a
+              key={social.label}
+              className="hero-social"
+              href={social.href}
+              aria-label={social.label}
+              {...(external
+                ? { target: "_blank", rel: "noopener noreferrer" }
+                : {})}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element -- local public icon */}
+              <img src={social.image} alt="" />
+            </a>
+          );
+        })}
       </div>
     </section>
   );
 }
-
