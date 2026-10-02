@@ -16,7 +16,7 @@ const HOLD_MS = 1800;
 export function Footer() {
   const year = new Date().getFullYear();
   const [roleIndex, setRoleIndex] = useState(0);
-  const [text, setText] = useState(roles[0]);
+  const [text, setText] = useState<string>(roles[0]);
   const [phase, setPhase] = useState<"typing" | "holding" | "erasing">("holding");
 
   useEffect(() => {

@@ -16,7 +16,7 @@ function ProjectCard({
   const number = String(index + 1).padStart(2, "0");
   const tag = project.services[0] ?? project.year;
 
-  function onPointerMove(event: React.PointerEvent<HTMLDivElement>) {
+  function onPointerMove(event: React.PointerEvent<HTMLAnchorElement>) {
     const card = event.currentTarget;
     const frame = card.parentElement;
     if (!frame || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -30,7 +30,7 @@ function ProjectCard({
     card.classList.add("is-tilting");
   }
 
-  function onPointerLeave(event: React.PointerEvent<HTMLDivElement>) {
+  function onPointerLeave(event: React.PointerEvent<HTMLAnchorElement>) {
     const card = event.currentTarget;
     card.classList.remove("is-tilting");
     card.style.transform = "rotateX(0deg) rotateY(0deg)";
