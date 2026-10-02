@@ -100,7 +100,9 @@ const navItems = [
 
 export function Header() {
   const pathname = usePathname();
+  const headerRef = useRef<HTMLElement>(null);
   const [collapsed, setCollapsed] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const [active, setActive] = useState("");
   const lastY = useRef(0);
 
@@ -128,6 +130,36 @@ export function Header() {
   }, []);
 
   useEffect(() => {
+    setMenuOpen(false);
+  }, [pathname]);
+
+  useEffect(() => {
+    if (!menuOpen) return;
+
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setMenuOpen(false);
+    };
+    const onPointer = (event: PointerEvent) => {
+      const target = event.target;
+      if (!(target instanceof Node)) return;
+      if (headerRef.current?.contains(target)) return;
+      setMenuOpen(false);
+    };
+    const onResize = () => {
+      if (window.innerWidth > 900) setMenuOpen(false);
+    };
+
+    document.addEventListener("keydown", onKey);
+    document.addEventListener("pointerdown", onPointer);
+    window.addEventListener("resize", onResize);
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.removeEventListener("pointerdown", onPointer);
+      window.removeEventListener("resize", onResize);
+    };
+  }, [menuOpen]);
+
+  useEffect(() => {
     const ids = ["about", "experience", "contact"];
     const observer = new IntersectionObserver(
       (entries) => {
@@ -149,8 +181,10 @@ export function Header() {
     return () => observer.disconnect();
   }, []);
 
+  const linksHidden = collapsed && !menuOpen;
+
   return (
-    <header className="site-header">
+    <header className="site-header" ref={headerRef}>
       <div
         className={cn("site-nav-pill", collapsed && "is-collapsed")}
         data-collapsed={collapsed ? "true" : "false"}
@@ -195,19 +229,21 @@ export function Header() {
         </a>
 
         <nav
-          className="site-nav-links"
+          id="site-nav-menu-panel"
+          className={cn("site-nav-links", menuOpen && "is-open")}
           aria-label="Primary"
-          aria-hidden={collapsed}
+          aria-hidden={linksHidden}
         >
           {navItems.map((item) => (
             <a
               key={item.label}
               href={item.href}
-              tabIndex={collapsed ? -1 : undefined}
+              tabIndex={linksHidden ? -1 : undefined}
               className={cn(
                 "site-nav-link",
                 pathname === "/" && active === item.hash && "is-active",
               )}
+              onClick={() => setMenuOpen(false)}
             >
               {item.label}
             </a>
@@ -215,6 +251,21 @@ export function Header() {
         </nav>
 
         <ThemeToggle />
+
+        <button
+          type="button"
+          className={cn("site-nav-menu", menuOpen && "is-open")}
+          aria-label={menuOpen ? "Close menu" : "Open menu"}
+          aria-expanded={menuOpen}
+          aria-controls="site-nav-menu-panel"
+          onClick={() => setMenuOpen((open) => !open)}
+        >
+          <span className="site-nav-menu-bars" aria-hidden>
+            <span />
+            <span />
+            <span />
+          </span>
+        </button>
 
         <span className="site-nav-dot" aria-hidden />
       </div>

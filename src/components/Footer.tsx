@@ -4,9 +4,10 @@ import { useEffect, useState } from "react";
 import { site } from "@/lib/site";
 
 const roles = [
-  "Graphic Designer",
+  "Product Designer",
   "UI UX Designer",
-  "UX Researcher",
+  "Frontend Developer",
+  "Creative Problem Solver"
 ] as const;
 
 const TYPE_MS = 55;
