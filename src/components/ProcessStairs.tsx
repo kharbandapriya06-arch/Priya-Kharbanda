@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type PointerEvent } from "react";
 import { cn } from "@/lib/utils";
 
 const services = [
@@ -45,6 +45,8 @@ export function ServicesStudio() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [inView, setInView] = useState(false);
   const [paused, setPaused] = useState(false);
+  const swipe = useRef<{ x: number; y: number } | null>(null);
+  const didSwipe = useRef(false);
 
   function syncPause(hover: boolean, focus: boolean) {
     hoverRef.current = hover;
@@ -71,6 +73,21 @@ export function ServicesStudio() {
     }, CYCLE_MS);
     return () => window.clearInterval(id);
   }, [inView, paused]);
+
+  function onDeckPointerDown(event: PointerEvent<HTMLDivElement>) {
+    swipe.current = { x: event.clientX, y: event.clientY };
+  }
+
+  function onDeckPointerUp(event: PointerEvent<HTMLDivElement>) {
+    if (!swipe.current) return;
+    const dx = event.clientX - swipe.current.x;
+    const dy = event.clientY - swipe.current.y;
+    swipe.current = null;
+    if (Math.abs(dx) < 48 || Math.abs(dx) < Math.abs(dy)) return;
+    didSwipe.current = true;
+    const direction = dx < 0 ? 1 : -1;
+    setActiveIndex((prev) => (prev + direction + services.length) % services.length);
+  }
 
   function focusStep(index: number) {
     setActiveIndex(index);
@@ -149,7 +166,15 @@ export function ServicesStudio() {
           </div>
         </div>
 
-        <div className="process-deck" id="service-panel">
+        <div
+          className="process-deck"
+          id="service-panel"
+          onPointerDown={onDeckPointerDown}
+          onPointerUp={onDeckPointerUp}
+          onPointerCancel={() => {
+            swipe.current = null;
+          }}
+        >
           {services.map((step, index) => {
             const diff = ((index - activeIndex + services.length + 2) % services.length) - 2;
             const pose =
@@ -161,7 +186,13 @@ export function ServicesStudio() {
                 className={cn("process-deck-card", `is-${step.icon}`, pose)}
                 aria-hidden={pose !== "is-front"}
                 tabIndex={pose === "is-front" ? -1 : 0}
-                onClick={() => setActiveIndex(index)}
+                onClick={() => {
+                  if (didSwipe.current) {
+                    didSwipe.current = false;
+                    return;
+                  }
+                  setActiveIndex(index);
+                }}
               >
                 <span className="process-deck-mark" aria-hidden>
                   {step.number}

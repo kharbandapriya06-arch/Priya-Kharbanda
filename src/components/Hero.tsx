@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState, type PointerEvent } from "react";
 import { site } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
@@ -9,6 +9,12 @@ const titles = site.heroTitles;
 export function Hero() {
   const [index, setIndex] = useState(0);
   const [prevIndex, setPrevIndex] = useState<number | null>(null);
+  const visualRef = useRef<HTMLDivElement>(null);
+  const bubbleRef = useRef<HTMLParagraphElement>(null);
+  const drag = useRef<{ pointerId: number; ox: number; oy: number } | null>(null);
+  const [bubblePos, setBubblePos] = useState<{ x: number; y: number } | null>(null);
+  const [tailSide, setTailSide] = useState<"left" | "right">("left");
+  const [dragging, setDragging] = useState(false);
 
   useEffect(() => {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -30,6 +36,49 @@ export function Hero() {
     const clear = window.setTimeout(() => setPrevIndex(null), 700);
     return () => window.clearTimeout(clear);
   }, [prevIndex, index]);
+
+  function moveBubble(clientX: number, clientY: number) {
+    const visual = visualRef.current;
+    const bubble = bubbleRef.current;
+    const session = drag.current;
+    if (!visual || !bubble || !session) return;
+
+    const bounds = visual.getBoundingClientRect();
+    const width = bubble.offsetWidth;
+    const height = bubble.offsetHeight;
+    const x = clientX - bounds.left - session.ox;
+    const y = clientY - bounds.top - session.oy;
+    const nextX = Math.min(Math.max(x, -width * 0.2), bounds.width - width * 0.8);
+    const nextY = Math.min(Math.max(y, -8), Math.max(-8, bounds.height - height * 0.4));
+
+    setTailSide(nextX + width / 2 < bounds.width / 2 ? "right" : "left");
+    setBubblePos({ x: nextX, y: nextY });
+  }
+
+  function onBubblePointerDown(event: PointerEvent<HTMLParagraphElement>) {
+    const bubble = bubbleRef.current;
+    if (!bubble) return;
+    const rect = bubble.getBoundingClientRect();
+    drag.current = {
+      pointerId: event.pointerId,
+      ox: event.clientX - rect.left,
+      oy: event.clientY - rect.top,
+    };
+    bubble.setPointerCapture(event.pointerId);
+    setDragging(true);
+    moveBubble(event.clientX, event.clientY);
+  }
+
+  function onBubblePointerMove(event: PointerEvent<HTMLParagraphElement>) {
+    if (!drag.current || drag.current.pointerId !== event.pointerId) return;
+    moveBubble(event.clientX, event.clientY);
+  }
+
+  function onBubblePointerUp(event: PointerEvent<HTMLParagraphElement>) {
+    if (!drag.current || drag.current.pointerId !== event.pointerId) return;
+    drag.current = null;
+    setDragging(false);
+  }
 
   return (
     <section className="hero" id="top">
@@ -146,17 +195,40 @@ export function Hero() {
           </div>
         </div>
 
-        <div className="hero-visual">
-          <p className="hero-bubble">
-            <span aria-hidden>👋 </span>
-            Hey, I&apos;m {site.shortName} Kharbanda.
+        <div className="hero-visual" ref={visualRef}>
+          <p
+            ref={bubbleRef}
+            className={cn(
+              "hero-bubble",
+              tailSide === "right" && "is-tail-right",
+              dragging && "is-dragging",
+            )}
+            style={
+              bubblePos
+                ? { left: bubblePos.x, top: bubblePos.y }
+                : undefined
+            }
+            onPointerDown={onBubblePointerDown}
+            onPointerMove={onBubblePointerMove}
+            onPointerUp={onBubblePointerUp}
+            onPointerCancel={onBubblePointerUp}
+          >
+            <span className="hero-bubble-wave" aria-hidden>
+              👋
+            </span>
+            <span className="hero-bubble-copy">
+              <span className="hero-bubble-line">Hey, I&apos;m</span>
+              <span className="hero-bubble-line hero-bubble-name">{site.shortName} Kharbanda</span>
+            </span>
           </p>
-          {/* eslint-disable-next-line @next/next/no-img-element -- local public portrait */}
-          <img
-            src={site.heroAvatar}
-            alt={site.name}
-            className="hero-portrait"
-          />
+          <div className="hero-portrait-float">
+            {/* eslint-disable-next-line @next/next/no-img-element -- local public portrait */}
+            <img
+              src={site.heroAvatar}
+              alt={site.name}
+              className="hero-portrait"
+            />
+          </div>
         </div>
       </div>
     </section>

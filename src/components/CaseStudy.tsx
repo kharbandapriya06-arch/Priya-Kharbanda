@@ -19,29 +19,52 @@ export function CaseStudy({
   next: Project;
 }) {
   const [active, setActive] = useState<string>(sections[0].id);
-  const shots = [
-    project.cover.images?.primary,
-    project.cover.images?.top,
-    project.cover.images?.bottom,
-  ].filter((src): src is string => Boolean(src));
+  const shots =
+    project.cover.gallery ??
+    [
+      project.cover.images?.primary,
+      project.cover.images?.top,
+      project.cover.images?.bottom,
+    ].filter((src): src is string => Boolean(src));
 
   useEffect(() => {
     const nodes = sections
       .map((section) => document.getElementById(section.id))
       .filter((node): node is HTMLElement => Boolean(node));
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-        if (visible?.target.id) setActive(visible.target.id);
-      },
-      { rootMargin: "-30% 0px -55% 0px", threshold: [0.1, 0.25, 0.5] },
-    );
+    let frame = 0;
 
-    nodes.forEach((node) => observer.observe(node));
-    return () => observer.disconnect();
+    const update = () => {
+      const line = 128;
+      let current = nodes[0]?.id ?? sections[0].id;
+
+      for (const node of nodes) {
+        if (node.getBoundingClientRect().top <= line) current = node.id;
+      }
+
+      const last = nodes[nodes.length - 1];
+      const atEnd =
+        window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 32;
+      const lastOnScreen = last ? last.getBoundingClientRect().top < window.innerHeight * 0.72 : false;
+
+      if (last && (atEnd || lastOnScreen)) current = last.id;
+
+      setActive((prev) => (prev === current ? prev : current));
+    };
+
+    const onScroll = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(update);
+    };
+
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
   }, [project.slug]);
 
   return (
@@ -97,20 +120,79 @@ export function CaseStudy({
           </div>
         </dl>
 
-        {sections.map((section, index) => (
+        {project.brief ? (
+          <section className="case-brief" aria-label="Project overview">
+            <div className="case-brief-lead">
+              <h2>
+                {project.brief.title.split("\n").map((line) => (
+                  <span key={line}>{line}</span>
+                ))}
+              </h2>
+              <p>{project.brief.lead}</p>
+              <div className="case-brief-links">
+                {project.brief.links.map((link) => (
+                  <a
+                    key={link.label}
+                    className="case-brief-link"
+                    href={link.href}
+                    aria-label={link.label}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {link.image ? (
+                      // eslint-disable-next-line @next/next/no-img-element -- local public icon
+                      <img src={link.image} alt="" />
+                    ) : (
+                      <svg viewBox="0 0 24 24" aria-hidden>
+                        <path
+                          d="M10.2 13.8a4.2 4.2 0 0 0 5.94.16l2.4-2.4a4.2 4.2 0 0 0-5.94-5.94l-1.38 1.37"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="1.7"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M13.8 10.2a4.2 4.2 0 0 0-5.94-.16l-2.4 2.4a4.2 4.2 0 0 0 5.94 5.94l1.37-1.37"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="1.7"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    )}
+                  </a>
+                ))}
+              </div>
+            </div>
+            <div className="case-brief-about">
+              <h2>{project.brief.aboutTitle}</h2>
+              <p>{project.brief.about}</p>
+              <dl>
+                <div>
+                  <dt>Date:</dt>
+                  <dd>{project.brief.date}</dd>
+                </div>
+                <div>
+                  <dt>Services:</dt>
+                  <dd>{project.brief.services}</dd>
+                </div>
+              </dl>
+            </div>
+          </section>
+        ) : null}
+
+        {sections.map((section) => (
           <section key={section.id} id={section.id} className="case-section">
             <h2>
               <span>{section.index}</span>
               {section.label}
             </h2>
             <p>{project[section.field]}</p>
-            {index === 0 && shots[0] ? (
-              // eslint-disable-next-line @next/next/no-img-element -- local public project still
-              <img src={shots[0]} alt="" className="case-shot" />
-            ) : null}
-            {index === 1 && shots.length > 1 ? (
-              <div className="case-shot-row">
-                {shots.slice(1).map((src) => (
+            {section.id === "approach" && shots.length > 0 ? (
+              <div className="case-shots">
+                {shots.map((src) => (
                   // eslint-disable-next-line @next/next/no-img-element -- local public project still
                   <img key={src} src={src} alt="" className="case-shot" />
                 ))}
