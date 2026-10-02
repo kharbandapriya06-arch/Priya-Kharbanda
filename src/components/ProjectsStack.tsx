@@ -58,9 +58,26 @@ function ProjectCard({
         </div>
         <div className="project-media">
           <div className="project-shots">
-            <ProjectCover project={project} variant="primary" />
-            <ProjectCover project={project} variant="top" />
-            <ProjectCover project={project} variant="bottom" />
+            <div className="project-shot-main">
+              <ProjectCover project={project} variant="primary" />
+              {index < 2 ? (
+                <div className="project-note">
+                  <p className="project-note-copy">{project.summary}</p>
+                  <div className="project-note-meta">
+                    <span className="project-note-year">{project.year}</span>
+                    <ul className="project-note-services">
+                      {project.services.map((service) => (
+                        <li key={service}>{service}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              ) : null}
+            </div>
+            <div className="project-shot-side">
+              <ProjectCover project={project} variant="top" />
+              <ProjectCover project={project} variant="bottom" />
+            </div>
           </div>
         </div>
       </Link>

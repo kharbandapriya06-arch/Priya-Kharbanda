@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type PointerEvent } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type PointerEvent } from "react";
 import { site } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
@@ -9,12 +9,37 @@ const titles = site.heroTitles;
 export function Hero() {
   const [index, setIndex] = useState(0);
   const [prevIndex, setPrevIndex] = useState<number | null>(null);
+  const heroRef = useRef<HTMLElement>(null);
+  const scrollRef = useRef<HTMLAnchorElement>(null);
+  const socialsRef = useRef<HTMLDivElement>(null);
   const visualRef = useRef<HTMLDivElement>(null);
   const bubbleRef = useRef<HTMLParagraphElement>(null);
   const drag = useRef<{ pointerId: number; ox: number; oy: number } | null>(null);
   const [bubblePos, setBubblePos] = useState<{ x: number; y: number } | null>(null);
   const [tailSide, setTailSide] = useState<"left" | "right">("left");
   const [dragging, setDragging] = useState(false);
+
+  useLayoutEffect(() => {
+    const hero = heroRef.current;
+    const scroll = scrollRef.current;
+    const socials = socialsRef.current;
+    if (!hero || !scroll || !socials) return;
+
+    const align = () => {
+      const bottom = hero.getBoundingClientRect().bottom - socials.getBoundingClientRect().bottom;
+      scroll.style.bottom = `${Math.max(0, bottom)}px`;
+    };
+
+    align();
+    const observer = new ResizeObserver(align);
+    observer.observe(hero);
+    observer.observe(socials);
+    window.addEventListener("resize", align);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", align);
+    };
+  }, []);
 
   useEffect(() => {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -81,8 +106,8 @@ export function Hero() {
   }
 
   return (
-    <section className="hero" id="top">
-      <a className="hero-scroll" href="#work">
+    <section className="hero" id="top" ref={heroRef}>
+      <a className="hero-scroll" href="#work" ref={scrollRef}>
         <span className="hero-scroll-mouse" aria-hidden>
           <span className="hero-scroll-wheel" />
         </span>
@@ -111,7 +136,7 @@ export function Hero() {
                 </span>
               ))}
             </span>
-            <span className="hero-headline-line">based</span>
+            <span className="hero-headline-line">Into</span>
             <span className="hero-headline-slot">
               {titles.map((title, i) => (
                 <span
@@ -174,7 +199,7 @@ export function Hero() {
             </a>
           </div>
 
-          <div className="hero-socials">
+          <div className="hero-socials" ref={socialsRef}>
             {site.socials.map((social) => {
               const external = social.href.startsWith("http");
               return (
