@@ -232,7 +232,7 @@ export const projects: Project[] = [
     title: "Yusuf Bhai Fragrance",
     client: "Product Breakdown",
     year: "2025",
-    services: ["UI/UX", "Art direction", "Print"],
+    services: ["UX Researcher", "Art direction", "Print"],
     summary:
       "A product breakdown for Yusuf Bhai Fragrance, from the pack to the screen.",
     challenge:

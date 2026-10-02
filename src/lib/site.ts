@@ -33,7 +33,6 @@ export const site = {
     { label: "LinkedIn", href: "https://www.linkedin.com/in/priya-kharbanda-ab06b6287/", image: "/linkedin_new.png" },
     { label: "Email", href: "mailto:kharbandapriya06@gmail.com", image: "/gmail_new.png" },
     { label: "Behance", href: "https://www.behance.net/priyakharbanda", image: "/behnace_new.png" },
-    { label: "Phone", href: "tel:+917455844665", image: "/phone_new.png" },
   ] as const,
   capabilities: [
     "UI/UX design",

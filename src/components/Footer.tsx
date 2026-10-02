@@ -14,7 +14,6 @@ const ERASE_MS = 35;
 const HOLD_MS = 1800;
 
 export function Footer() {
-  const year = new Date().getFullYear();
   const [roleIndex, setRoleIndex] = useState(0);
   const [text, setText] = useState<string>(roles[0]);
   const [phase, setPhase] = useState<"typing" | "holding" | "erasing">("holding");
@@ -66,9 +65,6 @@ export function Footer() {
             {text}
             <span className="site-footer-caret" aria-hidden />
           </span>
-        </p>
-        <p className="site-footer-right">
-          Designed & built from scratch · {year}
         </p>
       </div>
     </footer>

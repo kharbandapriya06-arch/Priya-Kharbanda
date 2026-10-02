@@ -1,9 +1,16 @@
 import { HomeContent } from "@/components/HomeContent";
 import { IntroGate } from "@/components/IntroGate";
 
-export default function Home() {
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: Promise<{ intro?: string }>;
+}) {
+  const params = await searchParams;
+  const skipIntro = params.intro === "skip";
+
   return (
-    <IntroGate>
+    <IntroGate seen={skipIntro}>
       <HomeContent />
     </IntroGate>
   );

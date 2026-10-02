@@ -111,7 +111,7 @@ export function ExperienceTimeline() {
     <section className="timeline">
       <p className="timeline-kicker">006</p>
       <h2 className="timeline-heading">
-        <span className="text-gradient">Freelance</span> & Internships
+        <span className="text-gradient">Experience</span>
       </h2>
 
       <div className="timeline-track" ref={trackRef}>
@@ -159,14 +159,6 @@ export function ExperienceTimeline() {
 
             <div className="timeline-right">
               <p className="timeline-copy">{role.summary}</p>
-              {role.shots ? (
-                <div className="timeline-fan" aria-hidden>
-                  {role.shots.map((src) => (
-                    // eslint-disable-next-line @next/next/no-img-element -- local project stills
-                    <img key={src} src={src} alt="" className="timeline-shot" />
-                  ))}
-                </div>
-              ) : null}
             </div>
           </article>
         ))}

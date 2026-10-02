@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type MouseEvent } from "react";
 import { usePathname } from "next/navigation";
 import { site } from "@/lib/site";
 import { cn } from "@/lib/utils";
@@ -155,7 +155,28 @@ export function Header() {
         className={cn("site-nav-pill", collapsed && "is-collapsed")}
         data-collapsed={collapsed ? "true" : "false"}
       >
-        <a href="/" className="site-nav-brand" aria-label={`${site.name} — home`}>
+        <a
+          href="/"
+          className="site-nav-brand"
+          aria-label={`${site.name} — home`}
+          onClick={(event: MouseEvent<HTMLAnchorElement>) => {
+            if (
+              event.metaKey ||
+              event.ctrlKey ||
+              event.shiftKey ||
+              event.altKey ||
+              event.button !== 0
+            ) {
+              return;
+            }
+            event.preventDefault();
+            if (window.location.pathname === "/") {
+              window.scrollTo({ top: 0, behavior: "smooth" });
+              return;
+            }
+            window.location.assign("/?intro=skip");
+          }}
+        >
           <span className="site-nav-avatar">
             {site.avatar ? (
               // eslint-disable-next-line @next/next/no-img-element -- local public avatar asset

@@ -14,7 +14,7 @@ export const experience: Role[] = [
     org: "Bough Consulting",
     year: "2026",
     period: "MAY – PRESENT",
-    location: "New Delhi",
+    location: "Gurgaon",
     summary:
       "Designing thoughtful digital experiences that enhance usability and drive business value. Transforming complex requirements into intuitive interfaces, workflows, and design solutions with product, business, and engineering teams.",
     shots: [
@@ -42,6 +42,7 @@ export const experience: Role[] = [
     org: "EazyByts",
     year: "2025",
     period: "SEPT – OCT",
+    location: "Remote",
     summary:
       "Designed mobile app screens, user flows, and dashboard experiences for MVP development. Built high-fidelity prototypes and reusable components in Figma, and tightened interface consistency through a design system.",
     shots: [

@@ -194,13 +194,15 @@ export function ServicesStudio() {
                   setActiveIndex(index);
                 }}
               >
-                <span className="process-deck-mark" aria-hidden>
-                  {step.number}
+                <span className="process-deck-head">
+                  <span className="process-deck-icon">
+                    <ServiceGlyph name={step.icon} />
+                  </span>
+                  <span className="process-deck-kicker">
+                    Service
+                    <span className="process-deck-mark">{step.number}</span>
+                  </span>
                 </span>
-                <span className="process-deck-icon">
-                  <ServiceGlyph name={step.icon} />
-                </span>
-                <span className="process-deck-kicker">Service {step.number}</span>
                 <span className="process-deck-title">{step.title}</span>
                 <span className="process-deck-copy">{step.summary}</span>
               </button>
