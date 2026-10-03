@@ -124,7 +124,10 @@ export function ProjectCover({
         : `linear-gradient(145deg, ${from} 0%, ${to} 120%)`;
 
   return (
-    <div className={cn("project-shot", panelClass[variant], className)} style={{ background }}>
+    <div
+      className={cn("project-shot", panelClass[variant], className)}
+      style={image ? undefined : { background }}
+    >
       {image ? (
         // eslint-disable-next-line @next/next/no-img-element -- local public project still
         <img src={image} alt="" className="project-shot-img" />

@@ -40,53 +40,85 @@ const CYCLE_MS = 4200;
 
 export function ServicesStudio() {
   const sectionRef = useRef<HTMLElement>(null);
+  const deckRef = useRef<HTMLDivElement>(null);
   const hoverRef = useRef(false);
   const focusRef = useRef(false);
   const [activeIndex, setActiveIndex] = useState(0);
   const [inView, setInView] = useState(false);
   const [paused, setPaused] = useState(false);
-  const swipe = useRef<{ x: number; y: number } | null>(null);
+  const swipe = useRef<{ x: number; y: number; pointerId: number } | null>(null);
   const didSwipe = useRef(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [cycleToken, setCycleToken] = useState(0);
 
   function syncPause(hover: boolean, focus: boolean) {
     hoverRef.current = hover;
     focusRef.current = focus;
+    if (window.matchMedia("(max-width: 860px)").matches) {
+      setPaused(false);
+      return;
+    }
     setPaused(hover || focus);
   }
 
+  function stepService(direction: number) {
+    setActiveIndex((prev) => (prev + direction + services.length) % services.length);
+    setCycleToken((token) => token + 1);
+  }
+
   useEffect(() => {
-    const section = sectionRef.current;
-    if (!section) return;
+    const deck = deckRef.current;
+    if (!deck) return;
     const observer = new IntersectionObserver(
       ([entry]) => setInView(entry.isIntersecting),
-      { threshold: 0.25 },
+      { threshold: 0.2 },
     );
-    observer.observe(section);
+    observer.observe(deck);
     return () => observer.disconnect();
   }, []);
 
   useEffect(() => {
+    const query = window.matchMedia("(max-width: 860px)");
+    const update = () => setIsMobile(query.matches);
+    update();
+    query.addEventListener("change", update);
+    return () => query.removeEventListener("change", update);
+  }, []);
+
+  useEffect(() => {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduced || !inView || paused) return;
+    if (reduced || !inView || (!isMobile && paused)) return;
     const id = window.setInterval(() => {
       setActiveIndex((prev) => (prev + 1) % services.length);
     }, CYCLE_MS);
     return () => window.clearInterval(id);
-  }, [inView, paused]);
+  }, [inView, paused, isMobile, cycleToken]);
 
   function onDeckPointerDown(event: PointerEvent<HTMLDivElement>) {
-    swipe.current = { x: event.clientX, y: event.clientY };
+    if (!window.matchMedia("(max-width: 860px)").matches) return;
+    swipe.current = { x: event.clientX, y: event.clientY, pointerId: event.pointerId };
+    try {
+      event.currentTarget.setPointerCapture(event.pointerId);
+    } catch {
+      /* The pointer can already be gone on a quick tap. */
+    }
   }
 
   function onDeckPointerUp(event: PointerEvent<HTMLDivElement>) {
-    if (!swipe.current) return;
+    if (!swipe.current || swipe.current.pointerId !== event.pointerId) return;
     const dx = event.clientX - swipe.current.x;
     const dy = event.clientY - swipe.current.y;
     swipe.current = null;
-    if (Math.abs(dx) < 48 || Math.abs(dx) < Math.abs(dy)) return;
+    try {
+      if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+        event.currentTarget.releasePointerCapture(event.pointerId);
+      }
+    } catch {
+      /* Capture was already released. */
+    }
+    if (Math.abs(dx) < 36 || Math.abs(dx) < Math.abs(dy)) return;
     didSwipe.current = true;
-    const direction = dx < 0 ? 1 : -1;
-    setActiveIndex((prev) => (prev + direction + services.length) % services.length);
+    stepService(dx < 0 ? 1 : -1);
   }
 
   function focusStep(index: number) {
@@ -151,8 +183,11 @@ export function ServicesStudio() {
                   aria-selected={selected}
                   aria-controls="service-panel"
                   tabIndex={selected ? 0 : -1}
-                  onClick={() => setActiveIndex(index)}
-                  onMouseEnter={() => setActiveIndex(index)}
+                  onClick={() => stepService(index - activeIndex)}
+                  onMouseEnter={() => {
+                    if (window.matchMedia("(max-width: 860px)").matches) return;
+                    setActiveIndex(index);
+                  }}
                   onFocus={() => setActiveIndex(index)}
                 >
                   <span className="process-nav-text">
@@ -167,6 +202,7 @@ export function ServicesStudio() {
         </div>
 
         <div
+          ref={deckRef}
           className="process-deck"
           id="service-panel"
           onPointerDown={onDeckPointerDown}

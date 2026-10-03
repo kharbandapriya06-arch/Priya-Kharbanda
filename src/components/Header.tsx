@@ -93,9 +93,9 @@ function ThemeToggle() {
 }
 
 const navItems = [
-  { href: "/#about", hash: "#about", label: "About" },
-  { href: "/#experience", hash: "#experience", label: "Experience" },
-  { href: "/#contact", hash: "#contact", label: "Contact" },
+  { href: "/#about", label: "About" },
+  { href: "/#experience", label: "Experience" },
+  { href: "/#contact", label: "Contact" },
 ] as const;
 
 export function Header() {
@@ -103,7 +103,6 @@ export function Header() {
   const headerRef = useRef<HTMLElement>(null);
   const [collapsed, setCollapsed] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [active, setActive] = useState("");
   const lastY = useRef(0);
 
   useEffect(() => {
@@ -158,28 +157,6 @@ export function Header() {
       window.removeEventListener("resize", onResize);
     };
   }, [menuOpen]);
-
-  useEffect(() => {
-    const ids = ["about", "experience", "contact"];
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-        if (visible?.target.id) {
-          setActive(`#${visible.target.id}`);
-        }
-      },
-      { rootMargin: "-35% 0px -50% 0px", threshold: [0.1, 0.25, 0.5] },
-    );
-
-    ids.forEach((id) => {
-      const node = document.getElementById(id);
-      if (node) observer.observe(node);
-    });
-
-    return () => observer.disconnect();
-  }, []);
 
   const linksHidden = collapsed && !menuOpen;
 
@@ -239,10 +216,7 @@ export function Header() {
               key={item.label}
               href={item.href}
               tabIndex={linksHidden ? -1 : undefined}
-              className={cn(
-                "site-nav-link",
-                pathname === "/" && active === item.hash && "is-active",
-              )}
+              className="site-nav-link"
               onClick={() => setMenuOpen(false)}
             >
               {item.label}

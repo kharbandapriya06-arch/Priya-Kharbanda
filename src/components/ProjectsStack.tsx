@@ -1,10 +1,46 @@
 "use client";
 
-import { useEffect, useRef, type CSSProperties } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from "react";
 import Link from "next/link";
 import { ProjectCover } from "@/components/ProjectCover";
 import { projects } from "@/lib/projects";
 import type { Project } from "@/lib/projects";
+
+function cardStills(project: Project) {
+  const { images } = project.cover;
+  return [images?.primary, images?.top, images?.bottom].filter((src): src is string => Boolean(src));
+}
+
+function ProjectNote({ project }: { project: Project }) {
+  return (
+    <div className="project-note">
+      <p className="project-note-copy">{project.summary}</p>
+      <div className="project-note-meta">
+        <span className="project-note-year">{project.year}</span>
+        <ul className="project-note-services">
+          {project.services.map((service) => (
+            <li key={service}>{service}</li>
+          ))}
+        </ul>
+      </div>
+      <span className="hero-btn hero-btn--solid">
+        <span className="hero-btn-label">Click to view full project</span>
+        <span className="hero-btn-arrow" aria-hidden>
+          <svg viewBox="0 0 22 16">
+            <path
+              d="M1.5 2.5 8 8l-6.5 5.5M11 2.5 17.5 8 11 13.5"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.7"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </span>
+      </span>
+    </div>
+  );
+}
 
 function ProjectCard({
   project,
@@ -15,6 +51,8 @@ function ProjectCard({
 }) {
   const number = String(index + 1).padStart(2, "0");
   const tag = project.services[0] ?? project.year;
+  const stills = cardStills(project);
+  const [lead, ...sides] = stills;
 
   function onPointerMove(event: React.PointerEvent<HTMLAnchorElement>) {
     const card = event.currentTarget;
@@ -44,6 +82,7 @@ function ProjectCard({
       <Link
         href={`/work/${project.slug}`}
         className="project-card"
+        data-index={index}
         onPointerMove={onPointerMove}
         onPointerLeave={onPointerLeave}
       >
@@ -59,24 +98,27 @@ function ProjectCard({
         <div className="project-media">
           <div className="project-shots">
             <div className="project-shot-main">
-              <ProjectCover project={project} variant="primary" />
-              {index < 2 ? (
-                <div className="project-note">
-                  <p className="project-note-copy">{project.summary}</p>
-                  <div className="project-note-meta">
-                    <span className="project-note-year">{project.year}</span>
-                    <ul className="project-note-services">
-                      {project.services.map((service) => (
-                        <li key={service}>{service}</li>
-                      ))}
-                    </ul>
-                  </div>
+              {lead ? (
+                <div className="project-shot project-shot--lead">
+                  {/* eslint-disable-next-line @next/next/no-img-element -- local public project still */}
+                  <img src={lead} alt="" className="project-shot-img" />
                 </div>
-              ) : null}
+              ) : (
+                <ProjectCover project={project} variant="primary" />
+              )}
             </div>
             <div className="project-shot-side">
-              <ProjectCover project={project} variant="top" />
-              <ProjectCover project={project} variant="bottom" />
+              {sides.map((src) => (
+                <div className="project-shot" key={src}>
+                  {/* eslint-disable-next-line @next/next/no-img-element -- local public project still */}
+                  <img src={src} alt="" className="project-shot-img" />
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="project-desc-inline">
+            <div className="project-glass">
+              <ProjectNote project={project} />
             </div>
           </div>
         </div>
@@ -88,26 +130,59 @@ function ProjectCard({
 export function ProjectsStack() {
   const listRef = useRef<HTMLDivElement>(null);
   const cursorRef = useRef<HTMLDivElement>(null);
+  const descRef = useRef<HTMLDivElement>(null);
+  const descIndexRef = useRef<number | null>(null);
   const finePointer = useRef(false);
+  const [descIndex, setDescIndex] = useState<number | null>(null);
 
   useEffect(() => {
     finePointer.current = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
   }, []);
 
-  function moveCursor(event: React.PointerEvent<HTMLDivElement>) {
+  function placeDesc(event: ReactPointerEvent<HTMLDivElement>, index: number | null) {
+    const desc = descRef.current;
+    if (!desc) return;
+    if (index === null || !finePointer.current) {
+      desc.classList.remove("is-on");
+      if (descIndexRef.current !== null) {
+        descIndexRef.current = null;
+        setDescIndex(null);
+      }
+      return;
+    }
+    if (descIndexRef.current !== index) {
+      descIndexRef.current = index;
+      setDescIndex(index);
+    }
+    const width = Math.min(368, window.innerWidth - 24);
+    const height = desc.offsetHeight || 248;
+    let x = event.clientX + 22;
+    let y = event.clientY + 22;
+    if (x + width > window.innerWidth - 12) x = event.clientX - width - 18;
+    if (y + height > window.innerHeight - 12) y = Math.max(12, event.clientY - height - 16);
+    desc.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+    desc.classList.add("is-on");
+  }
+
+  function moveCursor(event: ReactPointerEvent<HTMLDivElement>) {
     const cursor = cursorRef.current;
-    if (!cursor || !finePointer.current) return;
-    const card = (event.target as HTMLElement).closest(".project-card");
-    if (!card) {
-      cursor.classList.remove("is-on");
+    const card = (event.target as HTMLElement).closest<HTMLElement>(".project-card");
+    if (!cursor || !finePointer.current || !card) {
+      cursor?.classList.remove("is-on");
+      placeDesc(event, null);
       return;
     }
     cursor.classList.add("is-on");
     cursor.style.transform = `translate3d(${event.clientX}px, ${event.clientY}px, 0) translate(-50%, -50%)`;
+    const index = Number(card.dataset.index);
+    placeDesc(event, Number.isNaN(index) ? null : index);
   }
 
   function hideCursor() {
     cursorRef.current?.classList.remove("is-on");
+    descRef.current?.classList.remove("is-on");
+    descIndexRef.current = null;
+    setDescIndex(null);
   }
 
   useEffect(() => {
@@ -171,6 +246,13 @@ export function ProjectsStack() {
       onPointerLeave={hideCursor}
     >
       <div className="project-cursor" ref={cursorRef} aria-hidden />
+      <div className="project-desc-float" ref={descRef} aria-hidden>
+        {descIndex !== null ? (
+          <div className="project-glass">
+            <ProjectNote project={projects[descIndex]} />
+          </div>
+        ) : null}
+      </div>
       {projects.map((project, index) => (
         <ProjectCard key={project.slug} project={project} index={index} />
       ))}

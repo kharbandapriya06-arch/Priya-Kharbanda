@@ -293,9 +293,9 @@ export const projects: Project[] = [
     title: "Glamora",
     client: "UI/UX Case Study",
     year: "2026",
-    services: ["UI/UX"],
+    services: ["UI/UX", "Scheduling", "Client management"],
     summary:
-      "A UI/UX case study for Glamora, shaping the first screens around one clear next step.",
+      "A scheduling app for freelance beauty pros, with each screen built around one clear next step.",
     challenge:
       "The brand look was already there. The path through the product was not. It was hard to tell what to do first.",
     approach:
