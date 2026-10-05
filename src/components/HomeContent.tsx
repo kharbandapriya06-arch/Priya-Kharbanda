@@ -16,12 +16,6 @@ export function HomeContent() {
       <SkillsMarquee />
 
       <section id="work" className="projects">
-        <div className="projects-intro">
-          <p className="projects-kicker">001</p>
-          <h2 className="projects-heading">
-            <span className="text-gradient">Selected</span> work
-          </h2>
-        </div>
         <ProjectsStack />
       </section>
 

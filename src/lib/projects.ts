@@ -84,8 +84,8 @@ export const projects: Project[] = [
       ],
     },
     cover: {
-      from: "#141c28",
-      to: "#7a9bb8",
+      from: "#2a2116",
+      to: "#e2b15a",
       motif: "orbit",
       images: {
         primary: "/Type_based/TBP1.png",
@@ -146,8 +146,8 @@ export const projects: Project[] = [
       ],
     },
     cover: {
-      from: "#2a1c14",
-      to: "#c4a07a",
+      from: "#1a120e",
+      to: "#b8895a",
       motif: "rings",
       images: {
         primary: "/Coffee%20BItes/CF1.png",
@@ -205,8 +205,8 @@ export const projects: Project[] = [
       ],
     },
     cover: {
-      from: "#1a1a18",
-      to: "#8a8680",
+      from: "#122018",
+      to: "#5ea05a",
       motif: "slash",
       images: {
         primary: "/Auraghnath/AGH1.png",
@@ -268,8 +268,8 @@ export const projects: Project[] = [
       ],
     },
     cover: {
-      from: "#1c1410",
-      to: "#e24c2a",
+      from: "#101010",
+      to: "#b7b7b7",
       motif: "type",
       images: {
         primary: "/Yusuf_Bhai/YS1.png",
@@ -329,8 +329,8 @@ export const projects: Project[] = [
       ],
     },
     cover: {
-      from: "#12141c",
-      to: "#8a93a6",
+      from: "#1b1722",
+      to: "#8d74a8",
       motif: "grid",
       images: {
         primary: "/Glamora/GM1.png",
