@@ -19,11 +19,11 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ## Web3Forms (contact form)
 
-The contact page posts to [Web3Forms](https://web3forms.com) from the browser. No server route is required on the free plan.
+The contact form checks name, email, and message in the browser, then again on the server at `/api/contact`. After those checks pass, the browser sends the note to [Web3Forms](https://web3forms.com).
 
 1. Create an access key at [web3forms.com](https://web3forms.com) and verify your email.
 2. Copy `.env.example` to `.env.local` if it is not already there.
-3. Set `NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY` to your key.
+3. Set `WEB3FORMS_ACCESS_KEY` (or `NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY`) to your key.
 4. Restart `npm run dev`.
 
 Until the key is set, the form explains what is missing instead of failing silently.
@@ -35,7 +35,7 @@ This app is ready for Vercel with no extra config.
 1. Push the repo to GitHub.
 2. Import the project at [vercel.com/new](https://vercel.com/new).
 3. Add environment variables:
-   - `NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY`
+   - `WEB3FORMS_ACCESS_KEY` (or `NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY`)
    - `NEXT_PUBLIC_SITE_URL` (your production URL, e.g. `https://your-domain.vercel.app`)
 4. Deploy.
 

@@ -1,20 +1,57 @@
 "use client";
 
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
+import {
+  DISCUSSION_TOPICS,
+  type ContactField,
+  type ContactInput,
+  type FieldErrors,
+  isContactField,
+  validateContact,
+} from "@/lib/contact";
 import { site } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
 type Status = "idle" | "submitting" | "success" | "error" | "missing-key";
 
-const ACCESS_KEY = process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY ?? "";
-
 const contactLines = ["trustworthy", "intuitive", "that clicks."];
+const fieldOrder: ContactField[] = [
+  "name",
+  "email",
+  "phone",
+  "topic",
+  "message",
+];
+
+function readInput(form: HTMLFormElement): ContactInput {
+  const formData = new FormData(form);
+  const read = (name: ContactField) => String(formData.get(name) ?? "");
+  return {
+    name: read("name"),
+    email: read("email"),
+    phone: read("phone"),
+    topic: read("topic"),
+    message: read("message"),
+  };
+}
+
+function focusFirstInvalid(form: HTMLFormElement, fieldErrors: FieldErrors) {
+  const field = fieldOrder.find((name) => fieldErrors[name]);
+  if (!field) return;
+  form.querySelector<HTMLElement>(`#${field}`)?.focus();
+}
 
 export function ContactForm() {
   const [status, setStatus] = useState<Status>("idle");
   const [errorMessage, setErrorMessage] = useState("");
+  const [errors, setErrors] = useState<FieldErrors>({});
   const [lineIndex, setLineIndex] = useState(0);
   const [prevLine, setPrevLine] = useState<number | null>(null);
+  const formLoadedAt = useRef<number | null>(null);
+
+  if (formLoadedAt.current === null && typeof window !== "undefined") {
+    formLoadedAt.current = Date.now();
+  }
 
   useEffect(() => {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -37,47 +74,107 @@ export function ContactForm() {
     return () => window.clearTimeout(clear);
   }, [prevLine, lineIndex]);
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const form = event.currentTarget;
-
-    if (!ACCESS_KEY) {
-      setStatus("missing-key");
+  function handleChange(event: FormEvent<HTMLFormElement>) {
+    const target = event.target;
+    if (
+      !(
+        target instanceof HTMLInputElement ||
+        target instanceof HTMLTextAreaElement ||
+        target instanceof HTMLSelectElement
+      )
+    ) {
       return;
     }
 
+    const field = target.name;
+    if (!isContactField(field) || !errors[field]) return;
+
+    const { errors: nextErrors } = validateContact(readInput(event.currentTarget));
+    setErrors((current) => {
+      const next = { ...current };
+      if (nextErrors[field]) next[field] = nextErrors[field];
+      else delete next[field];
+      return next;
+    });
+  }
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+    const { errors: nextErrors, value } = validateContact(readInput(form));
+
+    if (Object.keys(nextErrors).length > 0) {
+      setErrors(nextErrors);
+      setErrorMessage("");
+      setStatus("idle");
+      focusFirstInvalid(form, nextErrors);
+      return;
+    }
+
+    setErrors({});
     setStatus("submitting");
     setErrorMessage("");
 
-    const formData = new FormData(form);
-    const payload = {
-      access_key: ACCESS_KEY,
-      subject: `New inquiry from ${site.name} portfolio`,
-      from_name: site.name,
-      name: formData.get("name"),
-      email: formData.get("email"),
-      phone: formData.get("phone"),
-      message: formData.get("message"),
-      botcheck: formData.get("botcheck") ? "true" : "",
-    };
-
     try {
-      const response = await fetch("https://api.web3forms.com/submit", {
+      const response = await fetch("/api/contact", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
         },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({
+          ...value,
+          hp_field: String(formData.get("hp_field") ?? ""),
+          botcheck: formData.get("botcheck") ? "true" : "",
+          formLoadedAt: formLoadedAt.current,
+        }),
       });
       const result = (await response.json()) as {
-        success?: boolean;
+        ok?: boolean;
+        code?: string;
         message?: string;
+        fieldErrors?: FieldErrors;
+        delivery?: Record<string, string>;
       };
 
-      if (result.success) {
+      if (result.ok && result.delivery) {
+        const sent = await fetch("https://api.web3forms.com/submit", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify(result.delivery),
+        });
+        const delivered = (await sent.json()) as {
+          success?: boolean;
+          message?: string;
+        };
+
+        if (!delivered.success) {
+          setErrorMessage(delivered.message || "The form could not be sent.");
+          setStatus("error");
+          return;
+        }
+      }
+
+      if (result.ok) {
         form.reset();
+        setErrors({});
         setStatus("success");
+        return;
+      }
+
+      if (result.code === "missing-key") {
+        setStatus("missing-key");
+        return;
+      }
+
+      if (result.fieldErrors && Object.keys(result.fieldErrors).length > 0) {
+        setErrors(result.fieldErrors);
+        setStatus("idle");
+        focusFirstInvalid(form, result.fieldErrors);
         return;
       }
 
@@ -155,71 +252,167 @@ export function ContactForm() {
               </button>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="contact-form">
-              <input
-                type="checkbox"
-                name="botcheck"
-                tabIndex={-1}
-                autoComplete="off"
-                className="hidden"
-                aria-hidden="true"
-              />
+            <form
+              onSubmit={handleSubmit}
+              onChange={handleChange}
+              className="contact-form"
+              noValidate
+            >
+              <div className="contact-field">
+                <label className="sr-only" htmlFor="name">
+                  Your name
+                </label>
+                <input
+                  id="name"
+                  name="name"
+                  type="text"
+                  autoComplete="name"
+                  aria-required="true"
+                  aria-invalid={errors.name ? true : undefined}
+                  aria-describedby={errors.name ? "name-error" : undefined}
+                  className={cn(
+                    "contact-input",
+                    errors.name && "contact-input--invalid",
+                  )}
+                  placeholder="Your name"
+                />
+                {errors.name && (
+                  <p id="name-error" className="contact-error" role="alert">
+                    {errors.name}
+                  </p>
+                )}
+              </div>
 
-              <label className="sr-only" htmlFor="name">
-                Your name
-              </label>
-              <input
-                id="name"
-                name="name"
-                type="text"
-                required
-                autoComplete="name"
-                className="contact-input"
-                placeholder="Your name"
-              />
+              <div className="contact-field">
+                <label className="sr-only" htmlFor="email">
+                  Email
+                </label>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  aria-required="true"
+                  aria-invalid={errors.email ? true : undefined}
+                  aria-describedby={errors.email ? "email-error" : undefined}
+                  className={cn(
+                    "contact-input",
+                    errors.email && "contact-input--invalid",
+                  )}
+                  placeholder="Email"
+                />
+                {errors.email && (
+                  <p id="email-error" className="contact-error" role="alert">
+                    {errors.email}
+                  </p>
+                )}
+              </div>
 
-              <label className="sr-only" htmlFor="email">
-                Email
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                required
-                autoComplete="email"
-                className="contact-input"
-                placeholder="Email"
-              />
+              <div className="contact-field">
+                <label className="sr-only" htmlFor="phone">
+                  Phone number, optional
+                </label>
+                <input
+                  id="phone"
+                  name="phone"
+                  type="tel"
+                  inputMode="tel"
+                  autoComplete="tel"
+                  aria-invalid={errors.phone ? true : undefined}
+                  aria-describedby={errors.phone ? "phone-error" : undefined}
+                  className={cn(
+                    "contact-input",
+                    errors.phone && "contact-input--invalid",
+                  )}
+                  placeholder="Phone number (optional)"
+                />
+                {errors.phone && (
+                  <p id="phone-error" className="contact-error" role="alert">
+                    {errors.phone}
+                  </p>
+                )}
+              </div>
 
-              <label className="sr-only" htmlFor="phone">
-                Phone number
-              </label>
-              <input
-                id="phone"
-                name="phone"
-                type="tel"
-                autoComplete="tel"
-                className="contact-input"
-                placeholder="Phone number"
-              />
+              <div className="contact-field">
+                <label className="sr-only" htmlFor="topic">
+                  What would you like to discuss? Optional.
+                </label>
+                <div className="contact-select-wrap">
+                  <select
+                    id="topic"
+                    name="topic"
+                    defaultValue=""
+                    aria-invalid={errors.topic ? true : undefined}
+                    aria-describedby={errors.topic ? "topic-error" : undefined}
+                    className={cn(
+                      "contact-input",
+                      "contact-select",
+                      errors.topic && "contact-input--invalid",
+                    )}
+                  >
+                    <option value="">What would you like to discuss?</option>
+                    {DISCUSSION_TOPICS.map((topic) => (
+                      <option key={topic} value={topic}>
+                        {topic}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                {errors.topic && (
+                  <p id="topic-error" className="contact-error" role="alert">
+                    {errors.topic}
+                  </p>
+                )}
+              </div>
 
-              <label className="sr-only" htmlFor="message">
-                Write your message
-              </label>
-              <textarea
-                id="message"
-                name="message"
-                required
-                rows={4}
-                className="contact-input contact-input--area"
-                placeholder="Write your message"
-              />
+              <div className="contact-field">
+                <label className="sr-only" htmlFor="message">
+                  Write your message
+                </label>
+                <textarea
+                  id="message"
+                  name="message"
+                  rows={4}
+                  aria-required="true"
+                  aria-invalid={errors.message ? true : undefined}
+                  aria-describedby={errors.message ? "message-error" : undefined}
+                  className={cn(
+                    "contact-input",
+                    "contact-input--area",
+                    errors.message && "contact-input--invalid",
+                  )}
+                  placeholder="Write your message"
+                />
+                {errors.message && (
+                  <p id="message-error" className="contact-error" role="alert">
+                    {errors.message}
+                  </p>
+                )}
+              </div>
+
+              <div className="contact-honeypot" aria-hidden="true">
+                <label htmlFor="hp_field">Leave this field empty</label>
+                <input
+                  id="hp_field"
+                  name="hp_field"
+                  type="text"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  defaultValue=""
+                />
+                <input
+                  type="checkbox"
+                  name="botcheck"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  defaultChecked={false}
+                />
+              </div>
 
               {status === "missing-key" && (
                 <p className="contact-note">
-                  Add your Web3Forms access key to{" "}
-                  <code>NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY</code>, then restart
-                  the server. Until then, email {site.email}.
+                  Add <code>WEB3FORMS_ACCESS_KEY</code> to your env file, then
+                  restart the server. Until then, email {site.email}.
                 </p>
               )}
 
